@@ -27,7 +27,7 @@ def apply_patches():
 	fu._reyal_core_patched = True
 
 
-# ── Patched implementations ───────────────────────────────────────────────────
+# -- Patched implementations
 
 def _get_fullname(user=None):
 	"""Return custom_short_name when set, otherwise fall back to full_name."""

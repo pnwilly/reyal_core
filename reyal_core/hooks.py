@@ -5,12 +5,12 @@ app_description = "Quality-of-life enhancements for Frappe / ERPNext"
 app_email = "pin@reyal.email"
 app_license = "mit"
 
-# ── Install / migrate hooks ───────────────────────────────────────────────────
+# -- Install / migrate hooks
 
 after_install = "reyal_core.setup.install.after_install"
 after_migrate = "reyal_core.setup.install.after_install"
 
-# ── Document events ───────────────────────────────────────────────────────────
+# -- Document events
 
 before_request = "reyal_core.overrides.apply_patches"
 
