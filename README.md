@@ -4,7 +4,7 @@ Quality-of-life enhancements for Frappe / ERPNext. Provides shared utilities and
 
 ## Features
 
-- **User short display name formatting** — configure how user names appear across the system (First + Last Initial, or First + Middle Initial + Last Initial). Short names are applied in the desk UI, email headers, and @mention autocomplete.
+- **User short display name formatting**: configure how user names appear across the system (First + Last Initial, or First + Middle Initial + Last Initial). Short names are applied in the desk UI, email headers, and @mention autocomplete.
 
 ## Installation
 
