@@ -9,7 +9,7 @@ import frappe
 
 
 def apply_patches():
-	"""Apply all reyal_core patches. Safe to call repeatedly — patches only once."""
+	"""Apply all reyal_core patches. Safe to call repeatedly; patches only once."""
 	import frappe.utils as fu
 	import frappe.desk.search as fs
 
@@ -27,7 +27,7 @@ def apply_patches():
 	fu._reyal_core_patched = True
 
 
-# ── Patched implementations ───────────────────────────────────────────────────
+# Patched implementations:
 
 def _get_fullname(user=None):
 	"""Return custom_short_name when set, otherwise fall back to full_name."""

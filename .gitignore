@@ -7,3 +7,22 @@ build/
 .env
 *.swp
 .DS_Store
+
+# Frappe/build outputs
+*.back
+*.backup
+sites/*.sqlite
+sites/*.sqlite3
+sites/assets/
+sites/site_public_files/
+logs/*.log
+*.pid
+
+# Python
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# Node
+node_modules/
