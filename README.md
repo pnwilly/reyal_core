@@ -4,12 +4,12 @@ Quality-of-life enhancements for Frappe / ERPNext. Provides shared utilities and
 
 ## Features
 
-- **User display name formatting** — configure how user names appear across the system (Full Name, First + Last Initial, First Name Only)
+- **User short display name formatting** — configure how user names appear across the system (First + Last Initial, or First + Middle Initial + Last Initial). Short names are applied in the desk UI, email headers, and @mention autocomplete.
 
 ## Installation
 
 ```bash
-pip install -e apps/reyal_core
+bench get-app https://github.com/pnwilly/reyal_core
 bench --site your.site install-app reyal_core
 bench --site your.site migrate
 ```
@@ -18,6 +18,6 @@ bench --site your.site migrate
 
 Go to **Reyal Settings** and configure:
 
-| Setting | Description |
+| Setting | Options |
 |---|---|
-| User Display Name Format | How user names appear in notifications and references |
+| User Short Display Name Format | First + Last Initial, First + Middle Initial + Last Initial |
