@@ -26,3 +26,7 @@ htmlcov/
 
 # Node
 node_modules/
+
+# Local AI assistant files
+CLAUDE.md
+CODEX.md
