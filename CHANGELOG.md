@@ -6,6 +6,8 @@ The format is based on Keep a Changelog.
 
 ## [Unreleased]
 
+## [0.0.2] - 2026-05-03
+
 ### Added
 
 - Desk Notifications row actions:
