@@ -58,7 +58,7 @@
 }
 
 .recent-item.notification-item .reyal-notification-delete {
-	display: none !important;
+	display: inline-flex !important;
 	align-items: center;
 	justify-content: center;
 	background: transparent;
@@ -70,6 +70,9 @@
 	line-height: 1;
 	font-size: 12px;
 	font-weight: 700;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 120ms ease;
 }
 
 .recent-item.notification-item .reyal-notification-delete .icon {
@@ -83,8 +86,15 @@
 }
 
 .recent-item.notification-item:hover .reyal-notification-controls .reyal-notification-delete,
-.recent-item.notification-item .reyal-notification-controls .reyal-notification-delete:hover {
-	display: inline-flex !important;
+.recent-item.notification-item .reyal-notification-controls .reyal-notification-delete:focus,
+.recent-item.notification-item .reyal-notification-controls .reyal-notification-delete:focus-visible {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.recent-item.notification-item .reyal-notification-delete:focus-visible {
+	outline: 2px solid var(--primary);
+	outline-offset: 2px;
 }
 
 .recent-item.notification-item > .reyal-notification-delete {

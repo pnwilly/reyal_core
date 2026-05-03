@@ -50,21 +50,36 @@
 		</svg>`;
 	}
 
+	function sync_notification_icon(view) {
+		if (!view || !view.toggle_notification_icon || !Array.isArray(view.dropdown_items)) return;
+
+		const has_unread = view.dropdown_items.some((item) => !item.read);
+		view.toggle_notification_icon(!has_unread);
+	}
+
 	function refresh_notifications_dropdown(notifications) {
 		const view = get_notifications_view(notifications);
 		if (!view || !view.get_notifications_list) return;
 
-		view.get_notifications_list(view.max_length || 20).then((r) => {
-			if (!r || !r.message) return;
+		view
+			.get_notifications_list(view.max_length || 20)
+			.then((r) => {
+				if (!r || !r.message) {
+					sync_notification_icon(view);
+					return;
+				}
 
-			view.dropdown_items = r.message.notification_logs || [];
-			frappe.update_user_info(r.message.user_info || {});
-			view.container.empty();
-			view.render_notifications_dropdown();
+				view.dropdown_items = r.message.notification_logs || [];
+				frappe.update_user_info(r.message.user_info || {});
+				view.container.empty();
+				view.render_notifications_dropdown();
 
-			const has_unread = view.dropdown_items.some((item) => !item.read);
-			view.toggle_notification_icon(!has_unread);
-		});
+				sync_notification_icon(view);
+			})
+			.catch((error) => {
+				console.error("Unable to refresh notifications dropdown", error);
+				sync_notification_icon(view);
+			});
 	}
 
 	function remove_notification_item_from_dom(docname) {
