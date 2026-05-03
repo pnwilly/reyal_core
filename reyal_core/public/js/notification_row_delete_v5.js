@@ -37,17 +37,32 @@
 		return view && view.container ? view.container.find(".notification-item") : $();
 	}
 
-	function get_delete_icon() {
-		const icon_html = frappe.utils.icon("delete", "xs", "", "--icon-stroke: currentColor;");
-		if (icon_html) return icon_html;
+	function make_delete_icon() {
+		const svg_namespace = "http://www.w3.org/2000/svg";
+		const svg = document.createElementNS(svg_namespace, "svg");
+		svg.setAttribute("class", "icon icon-xs");
+		svg.setAttribute("viewBox", "0 0 32 32");
+		svg.setAttribute("fill", "none");
+		svg.setAttribute("aria-hidden", "true");
 
-		return `<svg class="icon icon-xs" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-			<path stroke="currentColor" stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M7 7v18.118c0 2.145 1.492 3.882 3.333 3.882h11.333c1.842 0 3.333-1.737 3.333-3.882V7"></path>
-			<path stroke="currentColor" stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M5 7h22"></path>
-			<path stroke="currentColor" stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M10 7V6c0-1.657 1.343-3 3-3h6c1.657 0 3 1.343 3 3v1"></path>
-			<path stroke="currentColor" stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M18.8 14.4v8.571"></path>
-			<path stroke="currentColor" stroke-linejoin="round" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M13.2 14.4v8.571"></path>
-		</svg>`;
+		[
+			"M7 7v18.118c0 2.145 1.492 3.882 3.333 3.882h11.333c1.842 0 3.333-1.737 3.333-3.882V7",
+			"M5 7h22",
+			"M10 7V6c0-1.657 1.343-3 3-3h6c1.657 0 3 1.343 3 3v1",
+			"M18.8 14.4v8.571",
+			"M13.2 14.4v8.571",
+		].forEach((path_definition) => {
+			const path = document.createElementNS(svg_namespace, "path");
+			path.setAttribute("stroke", "currentColor");
+			path.setAttribute("stroke-linejoin", "round");
+			path.setAttribute("stroke-linecap", "round");
+			path.setAttribute("stroke-miterlimit", "10");
+			path.setAttribute("stroke-width", "2");
+			path.setAttribute("d", path_definition);
+			svg.appendChild(path);
+		});
+
+		return svg;
 	}
 
 	function sync_notification_icon(view) {
@@ -121,7 +136,8 @@
 
 	function make_delete_button(notifications, docname) {
 		const label = __("Delete notification");
-		const $delete = $('<span class="reyal-notification-delete"></span>')
+		const $delete = $(document.createElement("span"))
+			.addClass("reyal-notification-delete")
 			.attr({
 				role: "button",
 				tabindex: "0",
@@ -129,7 +145,7 @@
 				title: label,
 				"aria-label": label,
 			})
-			.html(get_delete_icon());
+			.append(make_delete_icon());
 
 		$delete.on("click", function (e) {
 			e.preventDefault();
