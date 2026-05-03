@@ -120,9 +120,16 @@
 	}
 
 	function make_delete_button(notifications, docname) {
-		const $delete = $(
-			`<span class="reyal-notification-delete" role="button" tabindex="0" data-docname="${docname}" title="${__("Delete notification")}" aria-label="${__("Delete notification")}">${get_delete_icon()}</span>`
-		);
+		const label = __("Delete notification");
+		const $delete = $('<span class="reyal-notification-delete"></span>')
+			.attr({
+				role: "button",
+				tabindex: "0",
+				"data-docname": docname,
+				title: label,
+				"aria-label": label,
+			})
+			.html(get_delete_icon());
 
 		$delete.on("click", function (e) {
 			e.preventDefault();

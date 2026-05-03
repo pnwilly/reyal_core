@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog.
 
+## [0.0.3] - 2026-05-03
+
+### Fixed
+
+- Build the notification delete control structurally and set dynamic attributes via jQuery `.attr(...)` to avoid DOM HTML reinterpretation.
+
 ## [0.0.2] - 2026-05-03
 
 ### Added
