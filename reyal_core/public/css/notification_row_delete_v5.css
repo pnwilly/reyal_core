@@ -1,10 +1,46 @@
 .recent-item.notification-item {
 	position: relative;
-	padding-right: 48px !important;
+	padding-right: 34px !important;
 }
 
 .recent-item.notification-item .notification-body {
+	position: relative;
+	display: grid !important;
+	grid-template-columns: 36px minmax(0, 1fr);
+	column-gap: 10px;
+	align-items: start;
 	flex: 1 1 auto;
+	min-width: 0;
+	width: 100%;
+}
+
+.recent-item.notification-item .notification-body::before {
+	position: absolute;
+	top: 39px;
+	left: 15px;
+	width: 6px !important;
+	height: 6px !important;
+	min-width: 6px !important;
+	margin: 0 !important;
+}
+
+.recent-item.notification-item:not(.unread) .notification-body::before {
+	display: none !important;
+}
+
+.recent-item.notification-item .notification-body .user-avatar {
+	grid-column: 1;
+	grid-row: 1;
+	justify-self: center;
+	width: 36px !important;
+	height: 36px !important;
+	margin-right: 0 !important;
+}
+
+.recent-item.notification-item .notification-body .message {
+	grid-column: 2;
+	grid-row: 1;
+	max-width: none !important;
 	min-width: 0;
 }
 
@@ -25,6 +61,8 @@
 	display: none !important;
 	align-items: center;
 	justify-content: center;
+	background: transparent;
+	border: 0;
 	cursor: pointer;
 	color: var(--text-muted);
 	border-radius: 4px;
@@ -34,13 +72,18 @@
 	font-weight: 700;
 }
 
+.recent-item.notification-item .reyal-notification-delete .icon {
+	width: 12px;
+	height: 12px;
+}
+
 .recent-item.notification-item .reyal-notification-delete:hover {
 	background: var(--fg-hover-color);
 	color: var(--text-color);
 }
 
-.recent-item.notification-item.unread:hover .reyal-notification-controls .reyal-notification-delete,
-.recent-item.notification-item.unread:focus-within .reyal-notification-controls .reyal-notification-delete {
+.recent-item.notification-item:hover .reyal-notification-controls .reyal-notification-delete,
+.recent-item.notification-item .reyal-notification-controls .reyal-notification-delete:hover {
 	display: inline-flex !important;
 }
 
