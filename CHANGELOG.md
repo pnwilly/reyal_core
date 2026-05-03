@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog.
 
+## [0.0.4] - 2026-05-03
+
+### Fixed
+
+- Build both the notification delete control and its dustbin icon with DOM APIs so CodeQL does not treat static icon markup as unsafe HTML.
+
 ## [0.0.3] - 2026-05-03
 
 ### Fixed
