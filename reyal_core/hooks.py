@@ -5,6 +5,10 @@ app_description = "Quality-of-life enhancements for Frappe / ERPNext"
 app_email = "pin@reyal.email"
 app_license = "mit"
 
+# Include custom Desk behaviour:
+app_include_js = "/assets/reyal_core/js/notification_row_delete_v5.js?v=20260503_17"
+app_include_css = "/assets/reyal_core/css/notification_row_delete_v5.css?v=20260503_17"
+
 # Install / migrate hooks:
 
 after_install = "reyal_core.setup.install.after_install"

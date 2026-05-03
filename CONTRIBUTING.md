@@ -36,6 +36,15 @@ Commit types: `feat`, `fix`, `bump`, `chore`, `refactor`, `docs`.
 
 - Never push directly to `main`.
 - Open a PR for every change.
+- Before opening a PR, run local validation on your target site:
+
+```bash
+bench --site <site> migrate
+bench --site <site> clear-cache
+bench restart
+```
+
+- Confirm your feature works locally after these commands.
 - If `main` moved while you were working, rebase before opening/updating the PR:
 
 ```bash
