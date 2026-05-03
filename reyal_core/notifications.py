@@ -41,15 +41,22 @@ def delete_notification(docname: str) -> dict[str, int]:
 	if frappe.flags.read_only or not docname:
 		return {"deleted": 0}
 
-	filters = {"name": str(docname)}
-	if frappe.session.user != "Administrator":
-		filters["for_user"] = frappe.session.user
+	filters = {
+		"name": str(docname),
+		"for_user": frappe.session.user,
+	}
 
 	owned_doc = frappe.db.exists("Notification Log", filters)
 	if not owned_doc:
 		return {"deleted": 0}
 
-	frappe.db.delete("Notification Log", {"name": owned_doc})
+	frappe.db.delete(
+		"Notification Log",
+		{
+			"name": owned_doc,
+			"for_user": frappe.session.user,
+		},
+	)
 	return {"deleted": 1}
 
 
