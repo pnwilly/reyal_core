@@ -3,10 +3,12 @@
 	padding-right: 34px !important;
 }
 
+/* Avatar | message only. Do not let rich HTML inside .message become extra grid items. */
 .recent-item.notification-item .notification-body {
 	position: relative;
 	display: grid !important;
 	grid-template-columns: 36px minmax(0, 1fr);
+	grid-template-rows: auto;
 	column-gap: 10px;
 	align-items: start;
 	flex: 1 1 auto;
@@ -28,7 +30,8 @@
 	display: none !important;
 }
 
-.recent-item.notification-item .notification-body .user-avatar {
+.recent-item.notification-item .notification-body > .user-avatar,
+.recent-item.notification-item .notification-body > .avatar {
 	grid-column: 1;
 	grid-row: 1;
 	justify-self: center;
@@ -37,11 +40,49 @@
 	margin-right: 0 !important;
 }
 
-.recent-item.notification-item .notification-body .message {
+.recent-item.notification-item .notification-body > .message {
 	grid-column: 2;
 	grid-row: 1;
-	max-width: none !important;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	max-width: 100% !important;
 	min-width: 0;
+}
+
+/* Email-style bodies (copied into description) must stack, not sit in columns. */
+.recent-item.notification-item .notification-description {
+	display: block;
+	overflow-wrap: anywhere;
+	word-break: break-word;
+}
+
+.recent-item.notification-item .notification-description p,
+.recent-item.notification-item .notification-description ul,
+.recent-item.notification-item .notification-description ol,
+.recent-item.notification-item .message > div p,
+.recent-item.notification-item .message > div ul,
+.recent-item.notification-item .message > div ol {
+	display: block;
+	float: none !important;
+	width: 100%;
+	max-width: 100%;
+	columns: auto !important;
+	column-count: 1 !important;
+	margin: 0 0 0.35em;
+}
+
+.recent-item.notification-item .notification-description ul,
+.recent-item.notification-item .notification-description ol,
+.recent-item.notification-item .message > div ul,
+.recent-item.notification-item .message > div ol {
+	padding-left: 1.25em;
+}
+
+.recent-item.notification-item .notification-description li,
+.recent-item.notification-item .message > div li {
+	display: list-item;
+	float: none !important;
 }
 
 .recent-item.notification-item .reyal-notification-controls {
