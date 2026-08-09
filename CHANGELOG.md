@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog.
 
+## [0.0.5] - 2026-08-09
+
+### Fixed
+
+- Keep rich HTML notification bodies stacked in a single column in the desk Notifications dropdown (avatar | message grid no longer lets email-style lists sit beside the greeting).
+
 ## [0.0.4] - 2026-05-03
 
 ### Fixed
