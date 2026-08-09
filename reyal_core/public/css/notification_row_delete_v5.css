@@ -40,8 +40,39 @@
 	flex: 0 0 36px;
 	width: 36px !important;
 	height: 36px !important;
+	min-width: 36px !important;
+	min-height: 36px !important;
+	max-width: 36px !important;
+	max-height: 36px !important;
 	margin-right: 0 !important;
+	overflow: hidden !important;
+	display: inline-flex !important;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	line-height: 1 !important;
+	font-size: 12px !important;
 }
+
+/* Initials avatars use .standard-image; photo avatars use .avatar-frame.
+   Both must stay 36px or the letters spill as giant text (e.g. "TO"). */
+.recent-item.notification-item .notification-body > .avatar .avatar-frame,
+.recent-item.notification-item .notification-body > .avatar .standard-image,
+.recent-item.notification-item .notification-body > .user-avatar .avatar-frame,
+.recent-item.notification-item .notification-body > .user-avatar .standard-image {
+	width: 36px !important;
+	height: 36px !important;
+	min-width: 36px !important;
+	min-height: 36px !important;
+	max-width: 36px !important;
+	max-height: 36px !important;
+	font-size: 12px !important;
+	line-height: 36px !important;
+	border-radius: 50% !important;
+	overflow: hidden !important;
+	box-sizing: border-box;
+}
+
 
 .recent-item.notification-item .notification-body > .message {
 	flex: 1 1 auto;
