@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog.
 
+## [0.0.9] - 2026-08-10
+
+### Fixed
+
+- Strip comment media (bare `<img>` and other rich HTML) from Notification Log descriptions in the Desk bell dropdown — prior sanitizers only matched email-style tags, so mention notifications with pasted photos still rendered full-size
+
 ## [0.0.8] - 2026-08-10
 
 ### Fixed
