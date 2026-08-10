@@ -3,6 +3,7 @@
 	const VIEW_PATCH_FLAG = "_reyal_notification_cleanup_view_patched_v5";
 	const OBSERVER_FLAG = "_reyal_notification_delete_observer_v5";
 	const DELETE_METHOD = "reyal_core.notifications.delete_notification";
+	const DECORATED_ATTR = "data-reyal-decorated";
 
 	function get_notifications_instance() {
 		if (!frappe || !frappe.frappe_toolbar) return null;
@@ -29,12 +30,20 @@
 			.remove();
 	}
 
+	/**
+	 * Only real notification rows: anchor.notification-item with a Notification Log name.
+	 * Never decorate tabs, footers, empty-states, or nested fragments.
+	 */
 	function get_rendered_notification_items(notifications) {
-		const $items = $(".dropdown-notifications .panel-notifications .notification-item");
-		if ($items.length) return $items;
-
 		const view = get_notifications_view(notifications);
-		return view && view.container ? view.container.find(".notification-item") : $();
+		const $root = view && view.container && view.container.length
+			? view.container
+			: $(".dropdown-notifications .panel-notifications");
+
+		return $root.find("a.notification-item[data-name]").filter(function () {
+			// Exclude nested matches if Frappe ever wraps items.
+			return $(this).closest("a.notification-item[data-name]").is(this);
+		});
 	}
 
 	function make_delete_icon() {
@@ -99,7 +108,7 @@
 
 	function remove_notification_item_from_dom(docname) {
 		if (!docname) return;
-		$(".dropdown-notifications .panel-notifications .notification-item").filter(function () {
+		$("a.notification-item[data-name]").filter(function () {
 			return $(this).attr("data-name") === docname;
 		}).remove();
 	}
@@ -162,7 +171,9 @@
 			}
 		});
 
-		$delete.tooltip({ delay: { show: 600, hide: 100 }, trigger: "hover" });
+		if ($.fn && $.fn.tooltip) {
+			$delete.tooltip({ delay: { show: 600, hide: 100 }, trigger: "hover" });
+		}
 		return $delete;
 	}
 
@@ -184,7 +195,7 @@
 	 * HTML into the subject), collapse it to a short plain-text line.
 	 */
 	function sanitize_notification_item_body($item) {
-		const $message = $item.find(".notification-body > .message").first();
+		const $message = $item.children(".notification-body").children(".message").first();
 		if (!$message.length) return;
 
 		const $description = $message.children(".notification-description").first();
@@ -210,8 +221,12 @@
 		const docname = $item.attr("data-name");
 		if (!docname) return;
 
+		// Already decorated for this log — avoid observer re-entry churn.
+		if ($item.attr(DECORATED_ATTR) === docname && $item.children(".reyal-notification-controls").length) {
+			return;
+		}
+
 		const is_unread = $item.hasClass("unread");
-		$item.removeClass("reyal-row-actions-visible");
 		$item.css({ position: "relative", "padding-right": "34px" });
 		sanitize_notification_item_body($item);
 
@@ -221,20 +236,12 @@
 			$item.append($controls);
 		}
 
-		const $existing_delete = $controls.children(".reyal-notification-delete").first();
-		if ($existing_delete.length) {
-			$item.find(".reyal-notification-delete").not($existing_delete).remove();
-		} else {
-			$item.find(".reyal-notification-delete").remove();
-			$controls.prepend(make_delete_button(notifications, docname));
-		}
+		$item.find(".reyal-notification-delete").remove();
+		$controls.prepend(make_delete_button(notifications, docname));
 
-		let $mark = $controls.children(".mark-as-read").first();
+		let $mark = $item.children(".mark-as-read").first();
 		if (!$mark.length) {
-			$mark = $item.children(".mark-as-read").first();
-		}
-		if (!$mark.length) {
-			$mark = $item.find(".mark-as-read").first();
+			$mark = $controls.children(".mark-as-read").first();
 		}
 
 		$item.find(".mark-as-read").not($mark).remove();
@@ -247,6 +254,7 @@
 		}
 
 		$item.find(".reyal-notification-actions").remove();
+		$item.attr(DECORATED_ATTR, docname);
 	}
 
 	function decorate_notification_items(notifications) {
@@ -260,13 +268,35 @@
 		const panel = $(".dropdown-notifications .panel-notifications").get(0);
 		if (!panel || panel[OBSERVER_FLAG]) return;
 
-		const observer = new MutationObserver(() => decorate_notification_items(notifications));
-		observer.observe(panel, {
+		const observer_config = {
 			attributes: true,
 			attributeFilter: ["class"],
 			childList: true,
 			subtree: true,
+		};
+
+		// Decorating mutates the panel; disconnect first or we re-enter forever and
+		// fragment rows (delete controls / layout applied over and over).
+		const observer = new MutationObserver(() => {
+			if (panel.__reyal_observer_busy_v5) return;
+			panel.__reyal_observer_busy_v5 = true;
+			try {
+				observer.disconnect();
+				// New/replaced rows need decoration; clear stamp when nodes are swapped.
+				get_rendered_notification_items(notifications).each(function () {
+					const $item = $(this);
+					if (!$item.children(".reyal-notification-controls").length) {
+						$item.removeAttr(DECORATED_ATTR);
+					}
+				});
+				decorate_notification_items(notifications);
+			} finally {
+				panel.__reyal_observer_busy_v5 = false;
+				observer.observe(panel, observer_config);
+			}
 		});
+
+		observer.observe(panel, observer_config);
 		panel[OBSERVER_FLAG] = observer;
 	}
 
@@ -277,6 +307,8 @@
 		const original_render = view.render_notifications_dropdown;
 		view.render_notifications_dropdown = function () {
 			original_render.call(this);
+			// Fresh render — allow redecorate.
+			get_rendered_notification_items(notifications).removeAttr(DECORATED_ATTR);
 			decorate_notification_items(notifications);
 			remove_legacy_header_delete(notifications);
 		};
