@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog.
 
+## [0.0.7] - 2026-08-10
+
+### Fixed
+
+- Keep notification avatars at 36px (including `.standard-image` initials) so letters like "TO" no longer render as giant pink text in the dropdown
+
 ## [0.0.6] - 2026-08-10
 
 ### Fixed
