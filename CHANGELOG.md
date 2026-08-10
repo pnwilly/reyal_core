@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog.
 
+## [0.0.8] - 2026-08-10
+
+### Fixed
+
+- Stop the notification MutationObserver from re-entering while decorating rows (was fragmenting one notification into avatar / text / mention slices each with a delete control)
+- Only decorate real `a.notification-item[data-name]` rows
+- Drop layout overrides that fought Frappe's notification row CSS; delete control stays top-right
+
 ## [0.0.7] - 2026-08-10
 
 ### Fixed
