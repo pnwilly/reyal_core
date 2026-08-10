@@ -9,6 +9,8 @@ The format is based on Keep a Changelog.
 ### Changed
 
 - Restore the compact notifications dropdown layout: tighter row padding/margins, avatar|message grid, unread indicator under the avatar, and vertically centered delete/mark-as-read controls (kept the 0.0.9 HTML/media sanitizer so density does not reintroduce skew)
+- Rename display title to **Reyal** (technical app name remains `reyal_core`)
+- Clarify app description; add GitHub project URLs; declare bounded Frappe v15 dependency for Frappe Cloud; refresh license copyright years
 
 ## [0.0.9] - 2026-08-10
 

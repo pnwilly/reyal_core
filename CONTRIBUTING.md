@@ -1,4 +1,4 @@
-# Contributing to Reyal Core
+# Contributing to Reyal
 
 ## Source of Truth
 
