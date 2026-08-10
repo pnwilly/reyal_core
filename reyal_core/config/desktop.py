@@ -8,6 +8,6 @@ def get_data():
 			"color": "#6C5CE7",
 			"icon": "octicon octicon-tools",
 			"type": "module",
-			"label": _("Reyal Core"),
+			"label": _("Reyal"),
 		}
 	]
