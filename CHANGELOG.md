@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog.
 
+## [0.0.6] - 2026-08-10
+
+### Fixed
+
+- Collapse email-style HTML in the desk Notifications dropdown to a short plain-text line so Travel Request (and similar) bodies no longer skew into two columns
+- Restore Frappe's flex notification row layout; keep the unread indicator beside the avatar and the mark-as-read control as a hover ring only
+
 ## [0.0.5] - 2026-08-09
 
 ### Fixed
