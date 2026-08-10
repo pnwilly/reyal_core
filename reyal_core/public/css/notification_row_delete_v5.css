@@ -3,56 +3,65 @@
 	padding-right: 34px !important;
 }
 
-/* Avatar | message only. Do not let rich HTML inside .message become extra grid items. */
+/*
+ * Keep Frappe's flex row (avatar + message). The earlier CSS grid let rich
+ * email HTML in the description lay out as a second column beside the greeting.
+ */
 .recent-item.notification-item .notification-body {
-	position: relative;
-	display: grid !important;
-	grid-template-columns: 36px minmax(0, 1fr);
-	grid-template-rows: auto;
-	column-gap: 10px;
-	align-items: start;
+	display: flex !important;
+	flex-direction: row;
+	align-items: flex-start;
+	gap: 10px;
 	flex: 1 1 auto;
 	min-width: 0;
 	width: 100%;
+	position: relative;
 }
 
+/* Native Frappe unread indicator — left of the avatar, not under it. */
 .recent-item.notification-item .notification-body::before {
-	position: absolute;
-	top: 39px;
-	left: 15px;
+	position: static !important;
+	display: inline-block !important;
+	flex: 0 0 6px;
+	align-self: center;
 	width: 6px !important;
 	height: 6px !important;
 	min-width: 6px !important;
 	margin: 0 !important;
+	border-radius: 10px;
 }
 
 .recent-item.notification-item:not(.unread) .notification-body::before {
-	display: none !important;
+	visibility: hidden;
 }
 
 .recent-item.notification-item .notification-body > .user-avatar,
 .recent-item.notification-item .notification-body > .avatar {
-	grid-column: 1;
-	grid-row: 1;
-	justify-self: center;
+	flex: 0 0 36px;
 	width: 36px !important;
 	height: 36px !important;
 	margin-right: 0 !important;
 }
 
 .recent-item.notification-item .notification-body > .message {
-	grid-column: 2;
-	grid-row: 1;
-	display: flex;
-	flex-direction: column;
-	gap: 4px;
-	max-width: 100% !important;
+	flex: 1 1 auto;
 	min-width: 0;
+	max-width: 100% !important;
+	display: block;
 }
 
-/* Email-style bodies (copied into description) must stack, not sit in columns. */
-.recent-item.notification-item .notification-description {
+.recent-item.notification-item .notification-body > .message > * {
 	display: block;
+	max-width: 100%;
+}
+
+/* Never newspaper-column email bodies in the desk bell. */
+.recent-item.notification-item .notification-description,
+.recent-item.notification-item .message > div {
+	display: block !important;
+	columns: 1 !important;
+	column-count: 1 !important;
+	column-width: auto !important;
 	overflow-wrap: anywhere;
 	word-break: break-word;
 }
@@ -63,12 +72,10 @@
 .recent-item.notification-item .message > div p,
 .recent-item.notification-item .message > div ul,
 .recent-item.notification-item .message > div ol {
-	display: block;
+	display: block !important;
 	float: none !important;
-	width: 100%;
-	max-width: 100%;
-	columns: auto !important;
-	column-count: 1 !important;
+	width: 100% !important;
+	max-width: 100% !important;
 	margin: 0 0 0.35em;
 }
 
@@ -81,8 +88,24 @@
 
 .recent-item.notification-item .notification-description li,
 .recent-item.notification-item .message > div li {
-	display: list-item;
+	display: list-item !important;
 	float: none !important;
+}
+
+/* Mark-as-read is a hover ring hit-target, not a second filled unread dot. */
+.recent-item.notification-item .reyal-notification-controls .mark-as-read {
+	background: transparent !important;
+	border: 2px solid transparent;
+	border-radius: 1000px;
+	width: 8px !important;
+	height: 8px !important;
+	box-sizing: border-box;
+}
+
+.recent-item.notification-item:hover .reyal-notification-controls .mark-as-read,
+.recent-item.notification-item .reyal-notification-controls .mark-as-read:focus,
+.recent-item.notification-item .reyal-notification-controls .mark-as-read:focus-visible {
+	border-color: var(--invert-neutral);
 }
 
 .recent-item.notification-item .reyal-notification-controls {

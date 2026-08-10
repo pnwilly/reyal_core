@@ -166,6 +166,46 @@
 		return $delete;
 	}
 
+	function looks_like_email_html(html) {
+		if (!html) return false;
+		return /<(p|ul|ol|table|div|br|h[1-6])\b/i.test(html);
+	}
+
+	function plain_text_from_html(html) {
+		if (typeof strip_html === "function") {
+			return strip_html(html).replace(/\s+/g, " ").trim();
+		}
+		return $("<div/>").html(html).text().replace(/\s+/g, " ").trim();
+	}
+
+	/**
+	 * Desk dropdowns should not render full email HTML bodies. When a
+	 * Notification Log mirrored email_content into description (or stuffed
+	 * HTML into the subject), collapse it to a short plain-text line.
+	 */
+	function sanitize_notification_item_body($item) {
+		const $message = $item.find(".notification-body > .message").first();
+		if (!$message.length) return;
+
+		const $description = $message.children(".notification-description").first();
+		if ($description.length && looks_like_email_html($description.html())) {
+			const text = plain_text_from_html($description.html());
+			if (text) {
+				$description.text(frappe.ellipsis ? frappe.ellipsis(text, 140) : text.slice(0, 140));
+			} else {
+				$description.remove();
+			}
+		}
+
+		$message.children("div").not(".notification-description, .notification-timestamp").each(function () {
+			const $block = $(this);
+			const html = $block.html() || "";
+			if (!looks_like_email_html(html)) return;
+			const text = plain_text_from_html(html);
+			$block.text(frappe.ellipsis ? frappe.ellipsis(text, 140) : text.slice(0, 140));
+		});
+	}
+
 	function decorate_notification_item($item, notifications) {
 		const docname = $item.attr("data-name");
 		if (!docname) return;
@@ -173,6 +213,7 @@
 		const is_unread = $item.hasClass("unread");
 		$item.removeClass("reyal-row-actions-visible");
 		$item.css({ position: "relative", "padding-right": "34px" });
+		sanitize_notification_item_body($item);
 
 		let $controls = $item.children(".reyal-notification-controls").first();
 		if (!$controls.length) {
