@@ -177,9 +177,17 @@
 		return $delete;
 	}
 
-	function looks_like_email_html(html) {
+	/**
+	 * Frappe injects Notification Log.description as raw HTML. That is fine
+	 * for the Notification Log form, but the Desk bell dropdown must stay
+	 * compact. Catch email bodies, Quill comment markup, and bare media
+	 * (comment mentions often store just an <img>).
+	 */
+	function looks_like_rich_html(html) {
 		if (!html) return false;
-		return /<(p|ul|ol|table|div|br|h[1-6])\b/i.test(html);
+		return /<(img|video|iframe|figure|svg|picture|audio|source|p|ul|ol|table|div|br|h[1-6]|blockquote|pre|hr|section|article)\b/i.test(
+			html
+		);
 	}
 
 	function plain_text_from_html(html) {
@@ -189,20 +197,27 @@
 		return $("<div/>").html(html).text().replace(/\s+/g, " ").trim();
 	}
 
+	function plain_preview(html, max_length) {
+		const text = plain_text_from_html(html);
+		if (!text) return "";
+		const limit = max_length || 140;
+		return frappe.ellipsis ? frappe.ellipsis(text, limit) : text.slice(0, limit);
+	}
+
 	/**
-	 * Desk dropdowns should not render full email HTML bodies. When a
-	 * Notification Log mirrored email_content into description (or stuffed
-	 * HTML into the subject), collapse it to a short plain-text line.
+	 * Collapse rich/media HTML in a rendered notification row (fallback for
+	 * rows already in the DOM, realtime inserts, etc.).
 	 */
 	function sanitize_notification_item_body($item) {
-		const $message = $item.children(".notification-body").children(".message").first();
+		const $body = $item.children(".notification-body").first();
+		const $message = $body.children(".message").first();
 		if (!$message.length) return;
 
 		const $description = $message.children(".notification-description").first();
-		if ($description.length && looks_like_email_html($description.html())) {
-			const text = plain_text_from_html($description.html());
+		if ($description.length && looks_like_rich_html($description.html())) {
+			const text = plain_preview($description.html(), 140);
 			if (text) {
-				$description.text(frappe.ellipsis ? frappe.ellipsis(text, 140) : text.slice(0, 140));
+				$description.text(text);
 			} else {
 				$description.remove();
 			}
@@ -211,10 +226,47 @@
 		$message.children("div").not(".notification-description, .notification-timestamp").each(function () {
 			const $block = $(this);
 			const html = $block.html() || "";
-			if (!looks_like_email_html(html)) return;
-			const text = plain_text_from_html(html);
-			$block.text(frappe.ellipsis ? frappe.ellipsis(text, 140) : text.slice(0, 140));
+			if (!looks_like_rich_html(html)) return;
+			const text = plain_preview(html, 140);
+			if (text) {
+				// Preserve Frappe's subject HTML when it is only lightweight
+				// markup; rewrite only when block/media content leaked in.
+				if (/<(img|video|iframe|figure|svg|picture|p|ul|ol|table|div)\b/i.test(html)) {
+					$block.text(text);
+				}
+			}
 		});
+
+		// Belt-and-suspenders: drop any leftover media under the message.
+		$message.find("img, video, iframe, svg, picture, audio").remove();
+		$message.children(".notification-description").filter(function () {
+			return !($(this).text() || "").trim();
+		}).remove();
+	}
+
+	/**
+	 * Sanitize the log payload before Frappe builds the row HTML so giant
+	 * comment images never flash into the dropdown.
+	 */
+	function sanitize_notification_log(notification_log) {
+		if (!notification_log) return notification_log;
+		const log = Object.assign({}, notification_log);
+
+		if (log.description && looks_like_rich_html(log.description)) {
+			log.description = plain_preview(log.description, 140);
+		}
+
+		["title", "subject"].forEach((field) => {
+			if (log[field] && looks_like_rich_html(log[field])) {
+				// Keep Frappe's subject-title bold wrappers when present; only
+				// strip when media / block markup leaked into the title.
+				if (/<(img|video|iframe|figure|svg|picture)\b/i.test(log[field])) {
+					log[field] = plain_preview(log[field], 100) || log[field];
+				}
+			}
+		});
+
+		return log;
 	}
 
 	function decorate_notification_item($item, notifications) {
@@ -303,6 +355,13 @@
 	function patch_notifications_view(notifications) {
 		const view = get_notifications_view(notifications);
 		if (!view || view[VIEW_PATCH_FLAG]) return;
+
+		const original_item_html = view.get_dropdown_item_html;
+		if (original_item_html) {
+			view.get_dropdown_item_html = function (notification_log) {
+				return original_item_html.call(this, sanitize_notification_log(notification_log));
+			};
+		}
 
 		const original_render = view.render_notifications_dropdown;
 		view.render_notifications_dropdown = function () {
