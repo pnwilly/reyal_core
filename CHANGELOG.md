@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog.
 
+## [0.0.10] - 2026-08-10
+
+### Changed
+
+- Restore the compact notifications dropdown layout: tighter row padding/margins, avatar|message grid, unread indicator under the avatar, and vertically centered delete/mark-as-read controls (kept the 0.0.9 HTML/media sanitizer so density does not reintroduce skew)
+
 ## [0.0.9] - 2026-08-10
 
 ### Fixed
