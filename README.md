@@ -1,6 +1,6 @@
-# Reyal Core
+# Reyal
 
-Quality-of-life enhancements for Frappe. Provides shared utilities and settings used by other Reyal apps.
+Shared Reyal utilities for Frappe: short display names and Desk notification actions. Used by other Reyal apps.
 
 ## Features
 

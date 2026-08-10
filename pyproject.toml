@@ -3,15 +3,25 @@ name = "reyal_core"
 authors = [
     { name = "Patrick Willy", email = "pin@reyal.email" }
 ]
-description = "Quality-of-life enhancements for Frappe / ERPNext"
+description = "Shared Reyal utilities for Frappe: short display names and Desk notification actions"
 requires-python = ">=3.10"
 readme = "README.md"
 dynamic = ["version"]
 dependencies = []
 
+[project.urls]
+Homepage = "https://github.com/pnwilly/reyal_core"
+Repository = "https://github.com/pnwilly/reyal_core"
+Issues = "https://github.com/pnwilly/reyal_core/issues"
+
 [build-system]
 requires = ["flit_core >=3.4,<4"]
 build-backend = "flit_core.buildapi"
+
+# Required by Frappe Cloud (Run Validations / Pre-build and app versioning).
+# Use a bounded NPM-style range — see https://docs.frappe.io/cloud/custom-apps/app-versioning/versioning
+[tool.bench.frappe-dependencies]
+frappe = ">=15.0.0,<16.0.0"
 
 [tool.bench.dev-dependencies]
 
