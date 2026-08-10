@@ -5,6 +5,15 @@
 	padding-right: 34px !important;
 }
 
+/* Comment/email media must never expand a dropdown row. Avatars stay below. */
+.recent-item.notification-item .notification-body .message img,
+.recent-item.notification-item .notification-body .message video,
+.recent-item.notification-item .notification-body .message iframe,
+.recent-item.notification-item .notification-body .message svg,
+.recent-item.notification-item .notification-body .message picture {
+	display: none !important;
+}
+
 /* Keep initials/photo avatars at the size Frappe's notification row expects. */
 .recent-item.notification-item .notification-body > .user-avatar,
 .recent-item.notification-item .notification-body > .avatar {
