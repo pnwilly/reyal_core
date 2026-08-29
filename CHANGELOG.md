@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog.
 
+## [0.0.11] - 2026-08-29
+
+### Changed
+
+- Add automated Ruff linting, formatting, and pytest checks for pull requests
+- Document local quality checks for contributors
+
 ## [0.0.10] - 2026-08-10
 
 ### Changed
