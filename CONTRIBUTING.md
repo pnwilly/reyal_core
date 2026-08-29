@@ -32,6 +32,18 @@ git commit -m "type: short description"
 
 Commit types: `feat`, `fix`, `bump`, `chore`, `refactor`, `docs`.
 
+### Local quality checks
+
+Run these checks before opening a pull request:
+
+```bash
+uv run --with ruff ruff check .
+uv run --with ruff ruff format --check .
+uv run --with pytest pytest
+```
+
+Ruff checks Python lint rules and formatting; pytest runs the automated test suite.
+
 ### Pull requests
 
 - Never push directly to `main`.

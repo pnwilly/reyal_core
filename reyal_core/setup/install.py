@@ -26,7 +26,11 @@ def _backfill_short_names():
 	"""Compute short_name for all existing users after install."""
 	from reyal_core.utils import compute_short_name_value
 
-	users = frappe.db.get_all("User", filters={"user_type": "System User"}, fields=["name", "first_name", "middle_name", "last_name"])
+	users = frappe.db.get_all(
+		"User",
+		filters={"user_type": "System User"},
+		fields=["name", "first_name", "middle_name", "last_name"],
+	)
 	for u in users:
 		short_name = compute_short_name_value(u.first_name, u.last_name, u.get("middle_name"))
 		frappe.db.set_value("User", u.name, "custom_short_name", short_name, update_modified=False)

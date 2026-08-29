@@ -7,7 +7,10 @@ def get_display_name(user: str | None) -> str:
 		return ""
 
 	u = frappe.db.get_value(
-		"User", user, ["first_name", "middle_name", "last_name", "full_name", "custom_short_name"], as_dict=True
+		"User",
+		user,
+		["first_name", "middle_name", "last_name", "full_name", "custom_short_name"],
+		as_dict=True,
 	)
 	if not u:
 		return user
@@ -36,7 +39,10 @@ def compute_short_name_value(
 
 def _get_format() -> str:
 	try:
-		return frappe.db.get_single_value("Reyal Settings", "user_short_display_name_format") or "First + Last Initial"
+		return (
+			frappe.db.get_single_value("Reyal Settings", "user_short_display_name_format")
+			or "First + Last Initial"
+		)
 	except Exception:
 		return "First + Last Initial"
 
@@ -49,9 +55,7 @@ def _first_last_initial(first_name: str | None, last_name: str | None) -> str:
 	return first or last
 
 
-def _first_middle_last_initial(
-	first_name: str | None, middle_name: str | None, last_name: str | None
-) -> str:
+def _first_middle_last_initial(first_name: str | None, middle_name: str | None, last_name: str | None) -> str:
 	first = (first_name or "").strip()
 	middle = (middle_name or "").strip()
 	last = (last_name or "").strip()
