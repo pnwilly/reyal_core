@@ -29,6 +29,7 @@ def apply_patches():
 
 # Patched implementations:
 
+
 def _get_fullname(user=None):
 	"""Return custom_short_name when set, otherwise fall back to full_name."""
 	if not user:
