@@ -14,7 +14,7 @@ This allows responsible disclosure without exposing your email publicly.
 
 | Version | Supported |
 |---------|-----------|
-| 0.1.x   | ✅        |
+| 0.0.x   | ✅        |
 
 ## Security Best Practices for Deployment
 

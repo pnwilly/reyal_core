@@ -1,7 +1,7 @@
 [project]
 name = "reyal_core"
 authors = [
-    { name = "Patrick Willy", email = "pin@reyal.email" }
+    { name = "Reyal", email = "oss@reyal.email" }
 ]
 description = "Shared Reyal utilities for Frappe: short display names and Desk notification actions"
 requires-python = ">=3.10"
@@ -24,6 +24,9 @@ build-backend = "flit_core.buildapi"
 frappe = ">=15.0.0,<16.0.0"
 
 [tool.bench.dev-dependencies]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 
 [tool.ruff]
 line-length = 110

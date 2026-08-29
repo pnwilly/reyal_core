@@ -1,8 +1,8 @@
 app_name = "reyal_core"
 app_title = "Reyal"
-app_publisher = "Patrick Willy"
+app_publisher = "Reyal"
 app_description = "Shared Reyal utilities for Frappe: short display names and Desk notification actions"
-app_email = "pin@reyal.email"
+app_email = "oss@reyal.email"
 app_license = "mit"
 
 # Include custom Desk behaviour:
