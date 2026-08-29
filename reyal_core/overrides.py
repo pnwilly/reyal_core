@@ -10,8 +10,8 @@ import frappe
 
 def apply_patches():
 	"""Apply all reyal_core patches. Safe to call repeatedly; patches only once."""
-	import frappe.utils as fu
 	import frappe.desk.search as fs
+	import frappe.utils as fu
 
 	if getattr(fu, "_reyal_core_patched", False):
 		return
