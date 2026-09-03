@@ -1,7 +1,7 @@
 /*
  * Compact Desk notifications dropdown.
- * Keep delete/mark-as-read chrome + denser row layout. Rich HTML is sanitized
- * in JS so the avatar|message grid cannot reintroduce the column skew.
+ * Keep delete/mark-as-read chrome + denser row layout while leaving message
+ * rendering to Frappe v15.
  */
 
 .recent-item.notification-item {
@@ -38,15 +38,6 @@
 }
 
 .recent-item.notification-item:not(.unread) .notification-body::before {
-	display: none !important;
-}
-
-/* Comment/email media must never expand a dropdown row. */
-.recent-item.notification-item .notification-body .message img,
-.recent-item.notification-item .notification-body .message video,
-.recent-item.notification-item .notification-body .message iframe,
-.recent-item.notification-item .notification-body .message svg,
-.recent-item.notification-item .notification-body .message picture {
 	display: none !important;
 }
 
@@ -103,16 +94,6 @@
 .recent-item.notification-item .notification-body > .message > * {
 	display: block;
 	max-width: 100%;
-}
-
-.recent-item.notification-item .notification-description {
-	display: -webkit-box;
-	-webkit-box-orient: vertical;
-	-webkit-line-clamp: 2;
-	line-clamp: 2;
-	overflow: hidden;
-	overflow-wrap: anywhere;
-	word-break: break-word;
 }
 
 .recent-item.notification-item .notification-timestamp {
