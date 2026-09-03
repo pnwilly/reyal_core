@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog.
 
+## [0.0.12] - 2026-09-03
+
+### Changed
+
+- Restore Frappe v15's native notification message rendering; retain Reyal's compact layout and per-row delete action
+
 ## [0.0.11] - 2026-08-29
 
 ### Changed
