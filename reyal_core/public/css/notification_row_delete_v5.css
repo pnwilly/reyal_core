@@ -1,14 +1,13 @@
 /*
- * Compact Desk notifications dropdown.
- * Keep delete/mark-as-read chrome + denser row layout while leaving message
- * rendering to Frappe v15.
+ * Desk notifications with Reyal row actions.
+ * Keep Frappe v15's row spacing while reserving room for the added controls.
  */
 
 .recent-item.notification-item {
 	position: relative;
-	/* Stock Frappe uses 10px padding + 10px margin — reclaim that vertical space. */
-	padding: 6px 28px 6px 0 !important;
-	margin: 4px 8px !important;
+	/* Match Frappe v15 vertically; retain extra right inset for Reyal controls. */
+	padding: 10px 28px 10px 0 !important;
+	margin: 10px !important;
 }
 
 /* Avatar | message only. Description lives inside .message, never as a grid item. */
