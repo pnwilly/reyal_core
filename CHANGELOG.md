@@ -8,7 +8,7 @@ The format is based on Keep a Changelog.
 
 ### Changed
 
-- Restore Frappe v15's native notification message rendering; retain Reyal's compact layout and per-row delete action
+- Restore Frappe v15's native notification message rendering and vertical row spacing; retain Reyal's per-row controls and avatar grid
 
 ## [0.0.11] - 2026-08-29
 
