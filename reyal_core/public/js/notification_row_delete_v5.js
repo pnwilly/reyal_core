@@ -6,8 +6,7 @@
 	const DECORATED_ATTR = "data-reyal-decorated";
 
 	function get_notifications_instance() {
-		if (!frappe || !frappe.frappe_toolbar) return null;
-		return frappe.frappe_toolbar.notifications;
+		return frappe.app?.sidebar?.notifications || null;
 	}
 
 	function get_notifications_view(notifications) {
@@ -38,7 +37,7 @@
 		const view = get_notifications_view(notifications);
 		const $root = view && view.container && view.container.length
 			? view.container
-			: $(".dropdown-notifications .panel-notifications");
+			: $(".notification-list-body .panel-notifications");
 
 		return $root.find("a.notification-item[data-name]").filter(function () {
 			// Exclude nested matches if Frappe ever wraps items.
@@ -224,7 +223,7 @@
 	}
 
 	function observe_notification_panel(notifications) {
-		const panel = $(".dropdown-notifications .panel-notifications").get(0);
+		const panel = get_notifications_view(notifications)?.container?.get(0);
 		if (!panel || panel[OBSERVER_FLAG]) return;
 
 		const observer_config = {
@@ -315,7 +314,6 @@
 		remove_legacy_header_delete(notifications);
 	}
 
-	$(document).on("toolbar_setup", init);
-	$(document).on("show.bs.dropdown shown.bs.dropdown", ".dropdown-notifications", init);
+	$(document).on("sidebar_setup", init);
 	$(init);
 })();

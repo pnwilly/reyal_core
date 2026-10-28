@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog.
 
+## [0.0.13] - 2026-10-28
+
+### Changed
+
+- Target Frappe V16 and attach notification actions to the sidebar notification view.
+
 ## [0.0.12] - 2026-09-03
 
 ### Changed
