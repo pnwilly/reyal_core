@@ -6,7 +6,10 @@ app_email = "oss@reyal.email"
 app_license = "mit"
 
 # Include custom Desk behaviour:
-app_include_js = "/assets/reyal_core/js/notification_row_delete_v5.js?v=20261111_02"
+app_include_js = [
+	"/assets/reyal_core/js/notification_row_delete_v5.js?v=20261111_02",
+	"/assets/reyal_core/js/view_amendment.js?v=20261112_02",
+]
 app_include_css = "/assets/reyal_core/css/notification_row_delete_v5.css?v=20261111_02"
 
 # Install / migrate hooks:

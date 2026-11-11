@@ -38,4 +38,4 @@ jobs:
           node-version: "24"
 
       - name: Test V16 notification integration
-        run: node --test tests/notifications_client.test.js
+        run: node --test tests/notifications_client.test.js tests/view_amendment_client.test.js
