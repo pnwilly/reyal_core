@@ -3,6 +3,9 @@
 	const VIEW_PATCH_FLAG = "_reyal_notification_cleanup_view_patched_v5";
 	const OBSERVER_FLAG = "_reyal_notification_delete_observer_v5";
 	const DELETE_METHOD = "reyal_core.notifications.delete_notification";
+	const MARK_READ_METHOD = "frappe.desk.doctype.notification_log.notification_log.mark_as_read";
+	const COUNT_METHOD = "frappe.client.get_count";
+	const notification_views = new Set();
 	const DECORATED_ATTR = "data-reyal-decorated";
 
 	function get_notifications_instance() {
@@ -176,6 +179,48 @@
 		return $delete;
 	}
 
+	/** The sidebar panel and the desktop popover each keep their own list and unread count. */
+	function mark_log_read_in_views(docname) {
+		notification_views.forEach((view) => {
+			const log = (view.dropdown_items || []).find((item) => item.name === docname);
+			if (log) log.read = 1;
+			if (!view.container || !view.container.find) return;
+			view.container
+				.find("a.notification-item[data-name]")
+				.filter(function () {
+					return $(this).attr("data-name") === docname;
+				})
+				.removeClass("unread");
+		});
+	}
+
+	/** The server count is the owner; Frappe seeds every bell from frappe.boot and never refreshes it. */
+	function sync_unread_count(count) {
+		frappe.boot.notification_unread_count = count;
+		notification_views.forEach((view) => {
+			view.unread_count = count;
+		});
+		const [view] = notification_views;
+		if (view && view.update_count_badge) view.update_count_badge(count);
+	}
+
+	/** Frappe V16 only clears unread via "Mark all as read"; opening a row marks just that log read. */
+	function mark_notification_read($item) {
+		if (!$item.hasClass("unread")) return;
+
+		const docname = $item.attr("data-name");
+		mark_log_read_in_views(docname);
+		frappe
+			.xcall(MARK_READ_METHOD, { docname })
+			.then(() =>
+				frappe.xcall(COUNT_METHOD, {
+					doctype: "Notification Log",
+					filters: { for_user: frappe.session.user, read: 0 },
+				})
+			)
+			.then(sync_unread_count);
+	}
+
 	function decorate_notification_item($item, notifications) {
 		const docname = $item.attr("data-name");
 		if (!docname) return;
@@ -185,7 +230,6 @@
 			return;
 		}
 
-		const is_unread = $item.hasClass("unread");
 		$item.css({ position: "relative", "padding-right": "34px" });
 
 		let $controls = $item.children(".reyal-notification-controls").first();
@@ -197,19 +241,9 @@
 		$item.find(".reyal-notification-delete").remove();
 		$controls.prepend(make_delete_button(notifications, docname));
 
-		let $mark = $item.children(".mark-as-read").first();
-		if (!$mark.length) {
-			$mark = $controls.children(".mark-as-read").first();
-		}
-
-		$item.find(".mark-as-read").not($mark).remove();
-		if (is_unread && $mark.length) {
-			if (!$mark.parent().is($controls)) {
-				$controls.append($mark.detach());
-			}
-		} else if ($mark.length) {
-			$mark.remove();
-		}
+		$item.off("click.reyal_mark_read").on("click.reyal_mark_read", () => {
+			mark_notification_read($item);
+		});
 
 		$item.find(".reyal-notification-actions").remove();
 		$item.attr(DECORATED_ATTR, docname);
@@ -261,6 +295,7 @@
 	function patch_notifications_view(notifications) {
 		const view = get_notifications_view(notifications);
 		if (!view || view[VIEW_PATCH_FLAG]) return;
+		notification_views.add(view);
 
 		const original_render = view.render_notifications_dropdown;
 		view.render_notifications_dropdown = function () {
