@@ -9,6 +9,7 @@ The format is based on Keep a Changelog.
 ### Changed
 
 - Allow deleting a cancelled document that has been amended; the amendment keeps its `amended_from` and `-1` name, a further amendment is still named `-2`, and the deleted document's series number is not reused
+- Show View Amendment instead of the disabled Amend button on a cancelled document that has been amended
 
 ## [0.0.14] - 2026-11-11
 
