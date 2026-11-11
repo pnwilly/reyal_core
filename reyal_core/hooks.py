@@ -16,10 +16,17 @@ after_migrate = "reyal_core.setup.install.after_install"
 
 # Document events:
 
-before_request = "reyal_core.overrides.apply_patches"
+before_request = [
+	"reyal_core.overrides.apply_patches",
+	"reyal_core.amendments.patch_amended_deletion",
+]
+before_job = ["reyal_core.amendments.patch_amended_deletion"]
 
 doc_events = {
+	"*": {
+		"on_trash": "reyal_core.amendments.keep_series_of_amended_original",
+	},
 	"User": {
 		"on_update": "reyal_core.user.compute_short_name",
-	}
+	},
 }
