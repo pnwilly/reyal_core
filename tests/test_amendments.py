@@ -8,6 +8,16 @@ class Flags(dict):
 	__setattr__ = dict.__setitem__
 
 
+def get_setting(enabled):
+	"""Fake frappe.db.get_single_value for the Reyal Settings switch."""
+
+	def get_single_value(doctype, fieldname):
+		assert (doctype, fieldname) == ("Reyal Settings", "allow_deleting_amended_originals")
+		return int(enabled)
+
+	return get_single_value
+
+
 def make_doc(docstatus, has_amended_from=True):
 	return SimpleNamespace(
 		doctype="Purchase Invoice",
@@ -18,8 +28,10 @@ def make_doc(docstatus, has_amended_from=True):
 	)
 
 
-def load_amendments(monkeypatch, has_amendments=True):
-	db = SimpleNamespace(exists=lambda doctype, filters: has_amendments)
+def load_amendments(monkeypatch, has_amendments=True, enabled=True):
+	db = SimpleNamespace(
+		exists=lambda doctype, filters: has_amendments, get_single_value=get_setting(enabled)
+	)
 	monkeypatch.setitem(sys.modules, "frappe", SimpleNamespace(db=db))
 
 	import reyal_core.amendments as amendments
@@ -34,6 +46,15 @@ def test_deleting_an_amended_original_keeps_its_series_number(monkeypatch):
 	amendments.keep_series_of_amended_original(doc)
 
 	assert doc.flags.reyal_keep_naming_series is True
+
+
+def test_series_number_is_released_while_the_setting_is_off(monkeypatch):
+	amendments = load_amendments(monkeypatch, enabled=False)
+	doc = make_doc(docstatus=2)
+
+	amendments.keep_series_of_amended_original(doc)
+
+	assert doc.flags.reyal_keep_naming_series is None
 
 
 def test_cancelled_documents_without_amendments_release_their_number(monkeypatch):
@@ -90,7 +111,7 @@ class FakeDocument:
 		return invalid_links, [CANCELLED_LINK]
 
 
-def load_patched_delete(monkeypatch):
+def load_patched_delete(monkeypatch, enabled=True):
 	"""Install fake Frappe modules, apply the patch, and return the patched delete module."""
 	reverted = []
 	delete_doc = SimpleNamespace(
@@ -106,6 +127,7 @@ def load_patched_delete(monkeypatch):
 	fake_frappe = SimpleNamespace(
 		model=model,
 		desk=desk,
+		db=SimpleNamespace(get_single_value=get_setting(enabled)),
 		get_meta=lambda doctype: SimpleNamespace(has_field=lambda fieldname: doctype == "Purchase Invoice"),
 		get_all=lambda doctype, filters, pluck: ["Bill-1-1"] if filters == {"amended_from": "Bill-1"} else [],
 	)
@@ -135,6 +157,13 @@ def test_amendments_do_not_block_deleting_their_cancelled_original(monkeypatch):
 	assert linked_with.get_statically_linked_docs(original, method="Delete", limit=5) == [PAYMENT]
 
 
+def test_amendments_block_deletion_while_the_setting_is_off(monkeypatch):
+	delete_doc, _, _ = load_patched_delete(monkeypatch, enabled=False)
+	original = SimpleNamespace(doctype="Purchase Invoice", name="Bill-1")
+
+	assert delete_doc.get_linked_docs(original, "Delete") == [AMENDMENT, PAYMENT]
+
+
 def test_amendments_still_count_when_cancelling(monkeypatch):
 	delete_doc, _, _ = load_patched_delete(monkeypatch)
 	original = SimpleNamespace(doctype="Purchase Invoice", name="Bill-1")
@@ -162,6 +191,14 @@ def test_amendment_of_a_deleted_original_still_validates(monkeypatch):
 
 	assert invalid_links == [MISSING_SUPPLIER]
 	assert cancelled_links == [CANCELLED_LINK]
+	assert amendment.amended_from == "Bill-1"
+
+
+def test_amendment_of_a_deleted_original_saves_after_the_setting_is_turned_off(monkeypatch):
+	_, _, document_class = load_patched_delete(monkeypatch, enabled=False)
+	amendment = document_class(amended_from="Bill-1")
+
+	assert amendment.get_invalid_links()[0] == [MISSING_SUPPLIER]
 	assert amendment.amended_from == "Bill-1"
 
 

@@ -1,6 +1,11 @@
 import frappe
 
 
+def is_amended_deletion_enabled():
+	"""Reyal Settings switch; off keeps Frappe's standard delete blockers and series reverts."""
+	return bool(frappe.db.get_single_value("Reyal Settings", "allow_deleting_amended_originals"))
+
+
 def keep_series_of_amended_original(doc, method=None):
 	"""Keep the series number of a deleted cancelled document that has amendments.
 
@@ -10,7 +15,7 @@ def keep_series_of_amended_original(doc, method=None):
 	"""
 	if not doc.docstatus.is_cancelled() or not doc.meta.has_field("amended_from"):
 		return
-	if frappe.db.exists(doc.doctype, {"amended_from": doc.name}):
+	if is_amended_deletion_enabled() and frappe.db.exists(doc.doctype, {"amended_from": doc.name}):
 		doc.flags.reyal_keep_naming_series = True
 
 
@@ -38,7 +43,7 @@ def skip_amendments(get_linked_docs):
 
 	def get_linked_docs_except_amendments(doc, method="Delete", *args, **kwargs):
 		links = get_linked_docs(doc, method, *args, **kwargs)
-		if method != "Delete" or not links:
+		if method != "Delete" or not links or not is_amended_deletion_enabled():
 			return links
 
 		amendments = get_amendments(doc.doctype, doc.name)
