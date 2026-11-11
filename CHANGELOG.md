@@ -10,6 +10,7 @@ The format is based on Keep a Changelog.
 
 - Allow deleting a cancelled document that has been amended; the amendment keeps its `amended_from` and `-1` name, a further amendment is still named `-2`, and the deleted document's series number is not reused
 - Show View Amendment instead of the disabled Amend button on a cancelled document that has been amended
+- Rename the Reyal Settings field User Short Display Name Format to Short Display Name Format; it already sits under Users
 
 ## [0.0.14] - 2026-11-11
 
