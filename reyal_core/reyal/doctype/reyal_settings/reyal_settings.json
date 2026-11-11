@@ -6,7 +6,9 @@
  "engine": "InnoDB",
  "field_order": [
   "section_users",
-  "user_short_display_name_format"
+  "user_short_display_name_format",
+  "section_documents",
+  "allow_deleting_amended_originals"
  ],
  "fields": [
   {
@@ -20,12 +22,24 @@
    "fieldtype": "Select",
    "label": "Short Display Name Format",
    "options": "First + Last Initial\nFirst + Middle Initial + Last Initial"
+  },
+  {
+   "fieldname": "section_documents",
+   "fieldtype": "Section Break",
+   "label": "Documents"
+  },
+  {
+   "default": "0",
+   "description": "Allow deleting a cancelled document after it has been amended. The amendment keeps its Amended From and name, and the deleted document's number is not reused.",
+   "fieldname": "allow_deleting_amended_originals",
+   "fieldtype": "Check",
+   "label": "Allow Deleting Amended Originals"
   }
  ],
  "idx": 0,
  "issingle": 1,
  "links": [],
- "modified": "2026-11-12 00:00:00.000000",
+ "modified": "2026-11-12 01:00:00.000000",
  "modified_by": "Administrator",
  "module": "Reyal",
  "name": "Reyal Settings",
