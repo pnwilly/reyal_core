@@ -8,6 +8,7 @@ Shared Reyal utilities for Frappe: short display names and Desk notification act
 - **Notification row actions in Desk**: adds a per-notification delete action in the toolbar Notifications dropdown.
 - **Safe notification delete flow**: delete action requires explicit user confirmation before removing a notification.
 - **Mark as read on open**: opening a notification marks just that notification read and lowers the unread badge. Frappe V16 otherwise only clears unread through "Mark all as read".
+- **Deletable amended originals**: Frappe's Amend works as usual, and a cancelled document that has been amended can still be deleted. The amendment keeps its `amended_from` and still saves, a further amendment is still named `-2`, and the deleted number is not reused.
 
 ## Installation
 
