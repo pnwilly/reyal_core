@@ -18,14 +18,14 @@
    "default": "First + Last Initial",
    "fieldname": "user_short_display_name_format",
    "fieldtype": "Select",
-   "label": "User Short Display Name Format",
+   "label": "Short Display Name Format",
    "options": "First + Last Initial\nFirst + Middle Initial + Last Initial"
   }
  ],
  "idx": 0,
  "issingle": 1,
  "links": [],
- "modified": "2024-01-01 00:00:00.000000",
+ "modified": "2026-11-12 00:00:00.000000",
  "modified_by": "Administrator",
  "module": "Reyal",
  "name": "Reyal Settings",

@@ -24,4 +24,4 @@ Go to **Reyal Settings** and configure:
 
 | Setting | Options |
 |---|---|
-| User Short Display Name Format | First + Last Initial, First + Middle Initial + Last Initial |
+| Users → Short Display Name Format | First + Last Initial, First + Middle Initial + Last Initial |
