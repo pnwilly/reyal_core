@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog.
 
+## [0.0.14] - 2026-11-11
+
+### Fixed
+
+- Opening a Desk notification marks it read and lowers the unread badge; Frappe V16 only cleared unread through "Mark all as read".
+
 ## [0.0.13] - 2026-10-28
 
 ### Changed

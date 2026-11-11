@@ -99,22 +99,6 @@
 	line-height: 1.2;
 }
 
-/* Mark-as-read is a hover ring hit-target, not a second filled unread dot. */
-.recent-item.notification-item .reyal-notification-controls .mark-as-read {
-	background: transparent !important;
-	border: 2px solid transparent;
-	border-radius: 1000px;
-	width: 8px !important;
-	height: 8px !important;
-	box-sizing: border-box;
-}
-
-.recent-item.notification-item:hover .reyal-notification-controls .mark-as-read,
-.recent-item.notification-item .reyal-notification-controls .mark-as-read:focus,
-.recent-item.notification-item .reyal-notification-controls .mark-as-read:focus-visible {
-	border-color: var(--invert-neutral);
-}
-
 .recent-item.notification-item .reyal-notification-controls {
 	display: inline-flex;
 	flex-direction: column;
