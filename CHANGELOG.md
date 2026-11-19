@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog.
 
+## [Unreleased]
+
+### Changed
+
+- Show a saved email Communication as a message: a subject pinned under the top bar, a card with the sender, To, Cc and Bcc, failed-delivery and read-receipt chips, the whole message without an inner scroll box, and one collapsed Details section in place of the stock Status, More Information, Reference, Email Inbox and Timeline Links sections
+- Show an email's direction and type in the title bar: a blue up-right arrow when sent, a green down-left arrow when received, and a list crumb named after the medium (Email, Phone, SMS…) that opens the list filtered by it; the sidebar shows the ID with the date to the minute and a short age (8 h ago)
+- Show an address that belongs to a linked Contact by the Contact's saved name, with the address on hover
+- List the reference and other linked documents on one Linked to line, one row per document type, using titles instead of IDs and Reyal short names for users; Contacts stay on the address lines, and Edit opens or closes the Timeline Links section
+
 ## [0.0.15] - 2026-11-11
 
 ### Changed

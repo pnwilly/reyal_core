@@ -1,0 +1,299 @@
+/* Communication form shown as an email (see communication_form.js). */
+
+.reyal-email-header {
+	padding: var(--padding-md) var(--padding-xl) var(--padding-lg);
+	border-bottom: 1px solid var(--border-color);
+}
+
+/* Pinned under the sticky top bar while the email scrolls. */
+.reyal-email-subject {
+	position: sticky;
+	top: var(--page-head-height);
+	z-index: 5;
+	padding: var(--padding-lg) var(--padding-xl) var(--padding-sm);
+	background: var(--card-bg);
+	font-size: var(--text-2xl);
+	font-weight: 600;
+	line-height: 1.3;
+	color: var(--heading-color);
+	overflow-wrap: anywhere;
+}
+
+.reyal-email-meta {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--margin-sm);
+}
+
+.reyal-email-people {
+	flex: 1 1 auto;
+	min-width: 0;
+	font-size: var(--text-sm);
+	line-height: 1.6;
+	color: var(--text-muted);
+	overflow-wrap: anywhere;
+}
+
+.reyal-email-name {
+	font-size: var(--text-base);
+	font-weight: 600;
+	color: var(--text-color);
+}
+
+.reyal-email-address {
+	margin-left: 4px;
+}
+
+.reyal-email-line {
+	display: flex;
+	align-items: baseline;
+}
+
+.reyal-email-label {
+	flex: none;
+	min-width: 28px;
+	margin-right: 6px;
+	color: var(--text-light);
+}
+
+.reyal-email-value {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.reyal-email-date {
+	flex: none;
+	text-align: right;
+	font-size: var(--text-sm);
+	line-height: 1.6;
+	color: var(--text-muted);
+	white-space: nowrap;
+}
+
+.reyal-email-ago {
+	display: block;
+	color: var(--text-light);
+}
+
+/* Direction arrow on the title crumb (see set_direction). */
+.reyal-email-sent .es-breadcrumbs [aria-current="page"] svg {
+	color: var(--blue-500);
+}
+
+.reyal-email-received .es-breadcrumbs [aria-current="page"] svg {
+	color: var(--green-500);
+}
+
+.reyal-email-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin-top: var(--margin-md);
+	padding-left: 44px;
+}
+
+.reyal-email-links {
+	margin-top: var(--margin-xs);
+	padding-left: 44px;
+	font-size: var(--text-sm);
+	line-height: 1.8;
+	color: var(--text-muted);
+	overflow-wrap: anywhere;
+}
+
+.reyal-email-links .reyal-email-label {
+	min-width: 64px;
+}
+
+.reyal-email-link {
+	color: var(--text-color);
+}
+
+/* A document-type row wraps under its first document, not under the type, so it never looks like a new row. */
+.reyal-email-link-group {
+	display: flex;
+	align-items: baseline;
+}
+
+.reyal-email-doctype {
+	flex: none;
+	margin-right: 6px;
+	color: var(--text-muted);
+}
+
+.reyal-email-doctype::after {
+	content: "·";
+	margin-left: 6px;
+	color: var(--text-light);
+}
+
+.reyal-email-link-items {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.reyal-email-edit-links {
+	margin-left: 6px;
+	color: var(--text-light);
+	cursor: pointer;
+}
+
+/* Its line runs edge to edge like the header's; the message section's own bottom line would double it. */
+.reyal-email-details {
+	padding: var(--padding-md) var(--padding-xl) var(--padding-lg);
+	border-top: 1px solid var(--border-color);
+	font-size: var(--text-sm);
+	color: var(--text-muted);
+}
+
+.reyal-email-details summary {
+	cursor: pointer;
+	color: var(--text-light);
+}
+
+.reyal-email-details dl {
+	display: grid;
+	grid-template-columns: max-content 1fr;
+	gap: 4px var(--margin-md);
+	margin: var(--margin-sm) 0 0;
+}
+
+.reyal-email-details dt {
+	font-weight: normal;
+	color: var(--text-light);
+}
+
+.reyal-email-details dd {
+	margin: 0;
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+
+/* Sidebar meta details: the title row shows the ID, so the separate ID line goes (see set_sidebar_details). */
+.reyal-email-meta .form-name-container {
+	display: none;
+}
+
+/* Stack the ID row and the date: the ID row spans the width so like and print sit at its right end. */
+.form-sidebar .sidebar-section.sidebar-meta-details.reyal-email-meta {
+	display: block;
+}
+
+.form-sidebar .sidebar-meta-details.reyal-email-meta > .flex {
+	width: 100%;
+}
+
+.reyal-email-sidebar-date .reyal-email-date {
+	margin-top: 2px;
+	text-align: right;
+	white-space: normal;
+}
+
+.reyal-email-sidebar-date .reyal-email-ago {
+	display: inline;
+	margin-left: 6px;
+}
+
+/* The sidebar shows from 768px; below that the date stays in the card. */
+@media (min-width: 768px) {
+	.reyal-email-date-in-sidebar .reyal-email-header .reyal-email-date {
+		display: none;
+	}
+}
+
+@media (max-width: 576px) {
+	.reyal-email-chips,
+	.reyal-email-links {
+		padding-left: 0;
+	}
+
+	.reyal-email-details {
+		padding: var(--padding-md);
+	}
+
+	.reyal-email-details dl {
+		grid-template-columns: 1fr;
+	}
+
+	.reyal-email-details dd {
+		margin-bottom: 6px;
+	}
+
+	.reyal-email-meta {
+		flex-wrap: wrap;
+	}
+
+	.reyal-email-date {
+		width: 100%;
+		padding-left: 44px;
+		text-align: left;
+	}
+
+	.reyal-email-ago {
+		display: inline;
+		margin-left: 6px;
+	}
+}
+
+/* Body reads like a message, not a disabled editor. */
+.reyal-email-view [data-fieldname="content"] .control-label {
+	display: none;
+}
+
+/* The message box runs edge to edge: no section or column padding around it, square corners, spacing inside. */
+.reyal-email-view .form-section:has(.frappe-control[data-fieldname="content"]) {
+	padding: 0;
+	border-bottom: none;
+}
+
+.reyal-email-view .form-section:has(.frappe-control[data-fieldname="content"]) > .section-body {
+	margin-top: 0;
+	padding-top: 0;
+}
+
+.reyal-email-view .form-section:has(.frappe-control[data-fieldname="content"]) .form-column {
+	padding: 0;
+}
+
+.reyal-email-view .frappe-control[data-fieldname="content"] .form-group {
+	margin-bottom: 0;
+}
+
+.reyal-email-view .frappe-control[data-fieldname="content"] .control-value.like-disabled-input {
+	border-radius: 0;
+	padding: var(--padding-lg) var(--padding-xl);
+}
+
+/* Frappe boxes a read-only Text Editor at 300px with its own scrollbar; let the message run full length so only the page scrolls. */
+.reyal-email-view .frappe-control[data-fieldname="content"] .control-value {
+	max-height: none;
+	overflow: visible;
+}
+
+.reyal-email-view [data-fieldname="content"] .ql-editor.read-mode {
+	padding: 0;
+	border: none;
+	background: none;
+	font-size: var(--text-base);
+	line-height: 1.6;
+	color: var(--text-color);
+	overflow-wrap: anywhere;
+}
+
+.reyal-email-view [data-fieldname="content"] .ql-editor.read-mode img {
+	max-width: 100%;
+	height: auto;
+}
+
+.reyal-email-view [data-fieldname="content"] .ql-editor.read-mode table {
+	display: block;
+	max-width: 100%;
+	overflow-x: auto;
+}
+
+.reyal-email-view [data-fieldname="content"] .ql-editor.read-mode blockquote {
+	margin: var(--margin-sm) 0;
+	padding-left: var(--padding-md);
+	border-left: 3px solid var(--border-color);
+	color: var(--text-muted);
+}
