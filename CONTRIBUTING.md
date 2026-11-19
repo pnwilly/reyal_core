@@ -6,15 +6,24 @@
 
 ## Git Workflow
 
-Use GitHub Flow with `main` as the only permanent branch.
+Use GitHub Flow with one permanent branch per Frappe version:
+
+- `v16` for Frappe v16; the default branch, where new work goes
+- `v15` for Frappe v15; fixes for sites still on v15
+
+Both are protected: changes reach them only through pull requests whose required checks pass.
 
 ### Starting work
 
+Branch from the version branch your change targets, here `v16`:
+
 ```bash
-git checkout main
-git pull origin main
+git checkout v16
+git pull origin v16
 git checkout -b feat/my-change
 ```
+
+A change both versions need goes in two pull requests, one per branch.
 
 Branch prefixes:
 
@@ -46,8 +55,8 @@ Ruff checks Python lint rules and formatting; pytest runs the automated test sui
 
 ### Pull requests
 
-- Never push directly to `main`.
-- Open a PR for every change.
+- Never push directly to `v15` or `v16`.
+- Open a PR for every change, targeting the version branch it was branched from.
 - Before opening a PR, run local validation on your target site:
 
 ```bash
@@ -57,11 +66,11 @@ bench restart
 ```
 
 - Confirm your feature works locally after these commands.
-- If `main` moved while you were working, rebase before opening/updating the PR:
+- If the target branch moved while you were working, rebase before opening/updating the PR:
 
 ```bash
 git fetch origin
-git rebase origin/main
+git rebase origin/v16
 ```
 
 ### After merge
@@ -71,11 +80,12 @@ Delete the feature branch locally and on origin.
 ## Versioning and Releases
 
 - Bump `reyal_core/__init__.py` (`__version__`) with each PR.
+- Use each version number once across both branches: check `git tag` and both branches' `CHANGELOG.md` before bumping, so a `v15` fix never reuses a number already taken on `v16`.
 - Keep `CHANGELOG.md` updated.
-- After merge to `main`, tag the release:
+- After merge to a version branch, tag the release from it:
 
 ```bash
-git checkout main && git pull origin main
+git checkout v16 && git pull origin v16
 git tag v<version>
 git push origin v<version>
 ```
@@ -84,7 +94,7 @@ Tag must match `__version__` prefixed with `v`.
 
 ## Deployment
 
-After merging to `main`:
+After merging to a version branch, on each site running that Frappe version:
 
 ```bash
 bench --site <site> migrate
