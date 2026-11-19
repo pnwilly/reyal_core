@@ -12,7 +12,7 @@ Shared Reyal utilities for Frappe: short display names and Desk notification act
 ## Installation
 
 ```bash
-bench get-app https://github.com/pnwilly/reyal_core
+bench get-app https://github.com/pnwilly/reyal_core --branch v15
 bench --site your.site install-app reyal_core
 bench --site your.site migrate
 ```
