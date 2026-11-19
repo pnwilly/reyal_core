@@ -10,7 +10,11 @@ app_include_js = [
 	"/assets/reyal_core/js/notification_row_delete_v5.js?v=20261111_02",
 	"/assets/reyal_core/js/view_amendment.js?v=20261112_02",
 ]
-app_include_css = "/assets/reyal_core/css/notification_row_delete_v5.css?v=20261111_02"
+app_include_css = [
+	"/assets/reyal_core/css/notification_row_delete_v5.css?v=20261111_02",
+	"/assets/reyal_core/css/communication_form.css?v=20261119_22",
+]
+doctype_js = {"Communication": "public/js/communication_form.js"}
 
 # Install / migrate hooks:
 
@@ -31,5 +35,8 @@ doc_events = {
 	},
 	"User": {
 		"on_update": "reyal_core.user.compute_short_name",
+	},
+	"Communication": {
+		"onload": "reyal_core.communication.add_names",
 	},
 }
