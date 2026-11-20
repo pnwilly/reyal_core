@@ -3,7 +3,7 @@ name = "reyal_core"
 authors = [
     { name = "Reyal", email = "oss@reyal.email" }
 ]
-description = "Shared Reyal utilities for Frappe: short display names and Desk notification actions"
+description = "Shared Frappe utilities used by Reyal sites and apps"
 requires-python = ">=3.14"
 readme = "README.md"
 dynamic = ["version"]
