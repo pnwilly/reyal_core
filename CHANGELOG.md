@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog.
 
+## [Unreleased]
+
+### Added
+
+- Name Payroll Entries `PROL-.ENDYY.ENDMM.#` on sites with HRMS: the year and month come from the payroll period's end date, set on install and migrate; this moves the naming from Kaida so sites without Kaida get it
+
 ## [0.0.16] - 2026-11-19
 
 ### Changed
