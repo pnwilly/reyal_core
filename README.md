@@ -1,16 +1,15 @@
 # Reyal
 
-Shared Reyal utilities for Frappe: short display names and Desk notification actions. Used by other Reyal apps.
+Shared Frappe utilities used by Reyal sites and apps.
 
-## Features
+## Requirements
 
-- **User short display name formatting**: configure how user names appear across the system (First + Last Initial, or First + Middle Initial + Last Initial). Short names are applied in the desk UI, email headers, email Communication links, and @mention autocomplete.
-- **Notification row actions in Desk**: adds a per-notification delete action in the toolbar Notifications dropdown.
-- **Safe notification delete flow**: delete action requires explicit user confirmation before removing a notification.
-- **Mark as read on open**: opening a notification marks just that notification read and lowers the unread badge. Frappe V16 otherwise only clears unread through "Mark all as read".
-- **Email-style Communication form**: a saved email Communication reads like a message. The subject stays pinned under the top bar, an arrow in the title bar shows whether it was sent or received, and the card shows the sender, To/Cc/Bcc (linked Contacts by name), delivery and read chips, the whole message, and one Linked to line with a row per document type (users by their short display name). Technical fields collapse into Details, and Edit opens the stock Timeline Links section.
-- **Deletable amended originals** (opt-in, Reyal Settings): Frappe's Amend works as usual, and a cancelled document that has been amended can still be deleted. The amendment keeps its `amended_from` and still saves, a further amendment is still named `-2`, and the deleted number is not reused. While both exist, the cancelled document shows View Amendment in place of the disabled Amend button.
-- **Payroll naming by period** (sites with HRMS): a Payroll Entry is named `PROL-` + the two-digit year and month of its end date + a running number, for example `PROL-26101` for the first October 2026 payroll. A Salary Structure Assignment is named the same way from its From Date, for example `SSA-261001`. The `ENDYY`, `ENDMM`, `FROMYY` and `FROMMM` naming variables are available to other naming series too.
+| Branch | Frappe | Python |
+|---|---|---|
+| `v16` (default) | 16.x | 3.14+ |
+| `v15` | 15.x | 3.10+ |
+
+This README describes `v16`. Payroll naming needs HRMS; everything else needs only Frappe.
 
 ## Installation
 
@@ -20,11 +19,39 @@ bench --site your.site install-app reyal_core
 bench --site your.site migrate
 ```
 
+Use `--branch v15` on a Frappe v15 bench.
+
+## Features
+
+- **Short display names**: users appear as, for example, `Jane D.` in Desk, email sender names, @mentions and Communication links. Format set in Reyal Settings.
+- **Notifications**: delete a row from the Notifications dropdown, after confirming. Opening a notification marks only that one as read.
+- **Email Communication form**: a saved email reads like a message, with a pinned subject, a sent or received arrow, the sender and recipients (linked Contacts by name), delivery and read chips, and one Linked to line per document type.
+- **Amended originals** (off by default): a cancelled document that has been amended can be deleted. The amendment keeps its name, and the deleted number is not reused.
+
+## Payroll naming
+
+On sites with HRMS, payroll documents are named after the period they cover, not the day they are saved.
+
+| Doctype | Naming | Example |
+|---|---|---|
+| Payroll Entry | `PROL-.ENDYY.ENDMM.#` | `PROL-26101`: first payroll ending October 2026 |
+| Salary Structure Assignment | `SSA-.FROMYY.FROMMM.##` | `SSA-260701`: first assignment from July 2026 |
+
+Install and migrate set this naming. Other naming series can use the same variables: `ENDYY` and `ENDMM` read End Date, `FROMYY` and `FROMMM` read From Date.
+
 ## Settings
 
-Go to **Reyal Settings** and configure:
+In **Reyal Settings**:
 
-| Setting | Options |
-|---|---|
-| Users → Short Display Name Format | First + Last Initial, First + Middle Initial + Last Initial |
-| Documents → Allow Deleting Amended Originals | Off (default), On |
+| Setting | Values | Default |
+|---|---|---|
+| Short Display Name Format | First + Last Initial, First + Middle Initial + Last Initial | First + Last Initial |
+| Allow Deleting Amended Originals | Off, On | Off |
+
+## Contributing
+
+Branch workflow and local checks: [CONTRIBUTING.md](CONTRIBUTING.md). Changes: [CHANGELOG.md](CHANGELOG.md).
+
+## License
+
+MIT. See [license.txt](license.txt).

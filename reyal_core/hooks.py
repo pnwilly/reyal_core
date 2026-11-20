@@ -1,7 +1,7 @@
 app_name = "reyal_core"
 app_title = "Reyal"
 app_publisher = "Reyal"
-app_description = "Shared Reyal utilities for Frappe: short display names and Desk notification actions"
+app_description = "Shared Frappe utilities used by Reyal sites and apps"
 app_email = "oss@reyal.email"
 app_license = "mit"
 
