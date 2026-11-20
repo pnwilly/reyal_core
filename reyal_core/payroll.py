@@ -3,42 +3,53 @@ from frappe import _
 from frappe.custom.doctype.property_setter.property_setter import make_property_setter
 from frappe.utils import getdate
 
-PAYROLL_ENTRY_NAMING = "PROL-.ENDYY.ENDMM.#"
-PAYROLL_ENTRY_NAMING_SETTER = "Payroll Entry-main-autoname"
+PAYROLL_NAMING = {
+	"Payroll Entry": "PROL-.ENDYY.ENDMM.#",
+	"Salary Structure Assignment": "SSA-.FROMYY.FROMMM.##",
+}
 
 
 def payroll_end_year(doc, variable=None):
 	"""Two-digit year of the payroll period's end date, for the ENDYY naming variable."""
-	return get_payroll_end_date(doc).strftime("%y")
+	return get_naming_date(doc, "end_date").strftime("%y")
 
 
 def payroll_end_month(doc, variable=None):
 	"""Two-digit month of the payroll period's end date, for the ENDMM naming variable."""
-	return get_payroll_end_date(doc).strftime("%m")
+	return get_naming_date(doc, "end_date").strftime("%m")
 
 
-def get_payroll_end_date(doc):
-	end_date = doc.get("end_date") if doc else None
-	if not end_date:
-		frappe.throw(_("Set the end date before naming the payroll entry."))
-	return getdate(end_date)
+def from_year(doc, variable=None):
+	"""Two-digit year of the From Date, for the FROMYY naming variable."""
+	return get_naming_date(doc, "from_date").strftime("%y")
 
 
-def set_payroll_entry_naming():
-	"""Name Payroll Entries by their period's end year and month, on sites that have HRMS."""
-	if not frappe.db.exists("DocType", "Payroll Entry"):
-		return
-	if not frappe.db.exists("Property Setter", PAYROLL_ENTRY_NAMING_SETTER):
+def from_month(doc, variable=None):
+	"""Two-digit month of the From Date, for the FROMMM naming variable."""
+	return get_naming_date(doc, "from_date").strftime("%m")
+
+
+def get_naming_date(doc, fieldname):
+	value = doc.get(fieldname) if doc else None
+	if not value:
+		label = fieldname.replace("_", " ")
+		frappe.throw(_("Set the {0} before naming this document.").format(label))
+	return getdate(value)
+
+
+def set_payroll_naming():
+	"""Name payroll documents by the period they cover, on sites that have HRMS."""
+	for doctype, naming in PAYROLL_NAMING.items():
+		if frappe.db.exists("DocType", doctype):
+			set_naming(doctype, naming)
+
+
+def set_naming(doctype, naming):
+	"""Set a doctype's naming through a Property Setter that Reyal owns."""
+	setter = f"{doctype}-main-autoname"
+	if not frappe.db.exists("Property Setter", setter):
 		make_property_setter(
-			"Payroll Entry",
-			None,
-			"autoname",
-			PAYROLL_ENTRY_NAMING,
-			"Data",
-			for_doctype=True,
-			is_system_generated=False,
+			doctype, None, "autoname", naming, "Data", for_doctype=True, is_system_generated=False
 		)
-	frappe.db.set_value(
-		"Property Setter", PAYROLL_ENTRY_NAMING_SETTER, {"value": PAYROLL_ENTRY_NAMING, "module": "Reyal"}
-	)
-	frappe.clear_cache(doctype="Payroll Entry")
+	frappe.db.set_value("Property Setter", setter, {"value": naming, "module": "Reyal"})
+	frappe.clear_cache(doctype=doctype)

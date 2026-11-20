@@ -1,7 +1,7 @@
 import frappe
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 
-from reyal_core.payroll import set_payroll_entry_naming
+from reyal_core.payroll import set_payroll_naming
 
 _CUSTOM_FIELDS = {
 	"User": [
@@ -21,7 +21,7 @@ _CUSTOM_FIELDS = {
 def after_install():
 	create_custom_fields(_CUSTOM_FIELDS, ignore_validate=True, update=True)
 	_backfill_short_names()
-	set_payroll_entry_naming()
+	set_payroll_naming()
 	frappe.db.commit()
 
 
