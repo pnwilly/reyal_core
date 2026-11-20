@@ -16,6 +16,11 @@ app_include_css = [
 ]
 doctype_js = {"Communication": "public/js/communication_form.js"}
 
+naming_series_variables = {
+	"ENDYY": "reyal_core.payroll.payroll_end_year",
+	"ENDMM": "reyal_core.payroll.payroll_end_month",
+}
+
 # Install / migrate hooks:
 
 after_install = "reyal_core.setup.install.after_install"
