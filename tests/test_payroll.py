@@ -10,14 +10,14 @@ class ValidationError(Exception):
 	pass
 
 
-def load_payroll(monkeypatch, has_payroll_entry=True, has_setter=False):
+def load_payroll(monkeypatch, doctypes=("Payroll Entry", "Salary Structure Assignment"), setters=()):
 	calls = []
 
 	def throw(message):
 		raise ValidationError(message)
 
 	def exists(doctype, name):
-		return has_payroll_entry if doctype == "DocType" else has_setter
+		return name in (doctypes if doctype == "DocType" else setters)
 
 	fake_frappe = ModuleType("frappe")
 	fake_frappe._ = lambda text: text
@@ -52,42 +52,57 @@ def test_end_date_sets_the_year_and_month(monkeypatch):
 	october = {"end_date": "2026-10-31"}
 	june = {"end_date": "2043-06-30"}
 
-	assert (payroll.payroll_end_year(october, "ENDYY"), payroll.payroll_end_month(october, "ENDMM")) == (
-		"26",
-		"10",
-	)
-	assert (payroll.payroll_end_year(june, "ENDYY"), payroll.payroll_end_month(june, "ENDMM")) == ("43", "06")
+	assert (payroll.payroll_end_year(october), payroll.payroll_end_month(october)) == ("26", "10")
+	assert (payroll.payroll_end_year(june), payroll.payroll_end_month(june)) == ("43", "06")
 
 
-@pytest.mark.parametrize("doc", [None, {}, {"end_date": None}])
-def test_end_date_is_required(monkeypatch, doc):
+def test_from_date_sets_the_year_and_month(monkeypatch):
+	payroll, _ = load_payroll(monkeypatch)
+	assignment = {"from_date": "2026-07-01", "end_date": "2026-12-31"}
+
+	assert (payroll.from_year(assignment, "FROMYY"), payroll.from_month(assignment, "FROMMM")) == ("26", "07")
+
+
+@pytest.mark.parametrize(
+	("variable", "doc"),
+	[("payroll_end_year", None), ("payroll_end_month", {}), ("from_year", {"from_date": None})],
+)
+def test_naming_date_is_required(monkeypatch, variable, doc):
 	payroll, _ = load_payroll(monkeypatch)
 
 	with pytest.raises(ValidationError):
-		payroll.payroll_end_year(doc, "ENDYY")
+		getattr(payroll, variable)(doc)
 
 
 def test_naming_is_created_and_owned_by_reyal(monkeypatch):
 	payroll, calls = load_payroll(monkeypatch)
-	payroll.set_payroll_entry_naming()
+	payroll.set_payroll_naming()
 
-	assert calls[0][0] == "make"
-	assert calls[0][1] == ("Payroll Entry", None, "autoname", "PROL-.ENDYY.ENDMM.#", "Data")
-	assert calls[1:] == [
+	assert [call[1][:4] for call in calls if call[0] == "make"] == [
+		("Payroll Entry", None, "autoname", "PROL-.ENDYY.ENDMM.#"),
+		("Salary Structure Assignment", None, "autoname", "SSA-.FROMYY.FROMMM.##"),
+	]
+	assert [call for call in calls if call[0] == "set_value"] == [
 		("set_value", "Payroll Entry-main-autoname", {"value": "PROL-.ENDYY.ENDMM.#", "module": "Reyal"}),
-		("clear_cache", "Payroll Entry"),
+		(
+			"set_value",
+			"Salary Structure Assignment-main-autoname",
+			{"value": "SSA-.FROMYY.FROMMM.##", "module": "Reyal"},
+		),
 	]
 
 
 def test_existing_naming_is_updated_in_place(monkeypatch):
-	payroll, calls = load_payroll(monkeypatch, has_setter=True)
-	payroll.set_payroll_entry_naming()
+	payroll, calls = load_payroll(
+		monkeypatch, doctypes=("Payroll Entry",), setters=("Payroll Entry-main-autoname",)
+	)
+	payroll.set_payroll_naming()
 
 	assert [call[0] for call in calls] == ["set_value", "clear_cache"]
 
 
 def test_naming_is_skipped_without_hrms(monkeypatch):
-	payroll, calls = load_payroll(monkeypatch, has_payroll_entry=False)
-	payroll.set_payroll_entry_naming()
+	payroll, calls = load_payroll(monkeypatch, doctypes=())
+	payroll.set_payroll_naming()
 
 	assert calls == []

@@ -19,6 +19,8 @@ doctype_js = {"Communication": "public/js/communication_form.js"}
 naming_series_variables = {
 	"ENDYY": "reyal_core.payroll.payroll_end_year",
 	"ENDMM": "reyal_core.payroll.payroll_end_month",
+	"FROMYY": "reyal_core.payroll.from_year",
+	"FROMMM": "reyal_core.payroll.from_month",
 }
 
 # Install / migrate hooks:
