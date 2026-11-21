@@ -1,0 +1,68 @@
+import frappe
+
+LINKED_ROWS = (
+	("Comment", "reference_name", "reference_doctype"),
+	("Communication", "reference_name", "reference_doctype"),
+	("File", "attached_to_name", "attached_to_doctype"),
+	("ToDo", "reference_name", "reference_type"),
+	("Version", "docname", "ref_doctype"),
+)
+
+
+def keep_draft_name_current(doc, method=None):
+	"""Rename a saved draft whose name no longer matches its series and dates."""
+	if doc.is_new() or doc.docstatus != 0 or doc.get("amended_from"):
+		return
+	series = series_for(doc)
+	if not series:
+		return
+	previous = doc.get_doc_before_save()
+	old_series = series_for(previous) if previous else series
+	if doc.meta.has_field("naming_series") and doc.naming_series != series:
+		doc.naming_series = series
+		if previous:
+			previous.naming_series = series
+	if not doc.name.startswith(get_prefix(series, doc)):
+		rename_draft(doc, series, old_series, previous)
+
+
+def series_for(doc):
+	if doc.meta.has_field("naming_series"):
+		return doc.naming_series
+	autoname = doc.meta.autoname or ""
+	return autoname if "#" in autoname else None
+
+
+def get_prefix(series, doc):
+	from frappe.model.naming import NamingSeries
+
+	return NamingSeries(series).get_prefix(doc)
+
+
+def rename_draft(doc, series, old_series, previous=None):
+	"""Rename a draft in place to the next name in series and give back its old number if it was the last.
+
+	The open form follows the new name through localname. Only drafts of submittable doctypes are
+	renamed, so no other document links to the old name.
+	"""
+	from frappe.model.naming import make_autoname, revert_series_if_last
+	from frappe.model.rename_doc import rename_parent_and_child
+
+	old_name = doc.name
+	new_name = make_autoname(series, doc.doctype, doc)
+	rename_parent_and_child(doc.doctype, old_name, new_name, doc.meta)
+	rename_linked_rows(doc.doctype, old_name, new_name)
+	revert_series_if_last(old_series, old_name, previous or doc)
+	doc.name = new_name
+	doc.localname = old_name
+	for child in doc.get_all_children():
+		child.parent = new_name
+
+
+def rename_linked_rows(doctype, old_name, new_name):
+	from frappe.query_builder import Field
+
+	for table, name_field, type_field in LINKED_ROWS:
+		frappe.qb.update(table).set(Field(name_field), new_name).where(
+			(Field(type_field) == doctype) & (Field(name_field) == old_name)
+		).run()

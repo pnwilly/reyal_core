@@ -16,6 +16,7 @@ The format is based on Keep a Changelog.
 - Name Journal Entries `JE-.POSTYY.POSTMM.##` and Payment Entries `PMT-.POSTYY.POSTMM.#` (or `TRF-.POSTYY.POSTMM.#`) on sites with ERPNext: the year and month come from the posting date, so an entry posted to an earlier period is named for that period
 - Name Additional Salaries `ADS-.PAYYY.PAYMM.#` and Holiday List Assignments `HLA-.FROMYY.FROMMM.#` on sites with HRMS
 - Add the `DATEYY`, `DATEMM`, `POSTYY`, `POSTMM`, `PAYYY`, `PAYMM` and `ABBR` naming variables for any naming series
+- Rename a saved draft named by a date when the date moves it to another period, moving its comments, attachments, to-dos and versions and giving back the old number when it was the last
 
 ### Fixed
 
