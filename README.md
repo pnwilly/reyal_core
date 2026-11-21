@@ -44,6 +44,8 @@ Payroll and share documents are named after the period or company they belong to
 | Additional Salary | `ADS-.PAYYY.PAYMM.#` (Series field) | `ADS-26111`: first additional salary for November 2026 | HRMS |
 | Holiday List Assignment | `HLA-.FROMYY.FROMMM.#` (Series field) | `HLA-26011`: first assignment from January 2026 | HRMS |
 
+A saved draft is renamed when its dates move it to another period, for example a payment moved from 31 October to 2 November goes from `PMT-26101` to `PMT-26111`. Its comments, attachments, to-dos and version history move with it, and the old number is given back when it was the last one used. Submitted, cancelled and amended documents keep their names.
+
 Install and migrate set this naming. Other naming series can use the same variables: `ENDYY` and `ENDMM` read End Date, `FROMYY` and `FROMMM` read From Date, `DATEYY` and `DATEMM` read Date, `POSTYY` and `POSTMM` read Posting Date, `PAYYY` and `PAYMM` read Payroll Date, and `ABBR` is the company's abbreviation.
 
 ## Settings
