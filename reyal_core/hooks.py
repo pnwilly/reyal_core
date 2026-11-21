@@ -56,7 +56,10 @@ doc_events = {
 		"onload": "reyal_core.communication.add_names",
 	},
 	# Drafts named by a date are renamed when the date moves them to another period.
-	"Payment Entry": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
+	"Payment Entry": {
+		"before_insert": "reyal_core.drafts.set_draft_series",
+		"before_validate": "reyal_core.drafts.keep_draft_name_current",
+	},
 	"Journal Entry": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
 	"Share Transfer": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
 	"Payroll Entry": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},

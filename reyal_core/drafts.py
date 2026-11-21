@@ -1,4 +1,7 @@
 import frappe
+from frappe import _
+
+from reyal_core.accounts import ACCOUNTING_SERIES
 
 LINKED_ROWS = (
 	("Comment", "reference_name", "reference_doctype"),
@@ -7,6 +10,11 @@ LINKED_ROWS = (
 	("ToDo", "reference_name", "reference_type"),
 	("Version", "docname", "ref_doctype"),
 )
+
+
+def set_draft_series(doc, method=None):
+	"""Give a new Payment Entry the TRF series when it is an internal transfer, else PMT."""
+	doc.naming_series = payment_series(doc)
 
 
 def keep_draft_name_current(doc, method=None):
@@ -27,10 +35,23 @@ def keep_draft_name_current(doc, method=None):
 
 
 def series_for(doc):
+	if doc.doctype == "Payment Entry":
+		return payment_series(doc)
 	if doc.meta.has_field("naming_series"):
 		return doc.naming_series
 	autoname = doc.meta.autoname or ""
 	return autoname if "#" in autoname else None
+
+
+def payment_series(doc):
+	"""The PMT- or TRF- series for this payment, from the Series options reyal_core sets."""
+	prefix = "TRF-" if doc.payment_type == "Internal Transfer" else "PMT-"
+	options = (doc.meta.get_options("naming_series") or "").split("\n")
+	series = next((option for option in options if option.startswith(prefix)), None)
+	if not series:
+		expected = next(s for s in ACCOUNTING_SERIES["Payment Entry"] if s.startswith(prefix))
+		frappe.throw(_("Payment Entry has no {0} series. Migrate to set {1}.").format(prefix, expected))
+	return series
 
 
 def get_prefix(series, doc):

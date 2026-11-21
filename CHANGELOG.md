@@ -17,6 +17,7 @@ The format is based on Keep a Changelog.
 - Name Additional Salaries `ADS-.PAYYY.PAYMM.#` and Holiday List Assignments `HLA-.FROMYY.FROMMM.#` on sites with HRMS
 - Add the `DATEYY`, `DATEMM`, `POSTYY`, `POSTMM`, `PAYYY`, `PAYMM` and `ABBR` naming variables for any naming series
 - Rename a saved draft named by a date when the date moves it to another period, moving its comments, attachments, to-dos and versions and giving back the old number when it was the last
+- Give a Payment Entry the `TRF-` series when it is an Internal Transfer and `PMT-` otherwise; this moves the switch from Kaida so sites without Kaida get it
 
 ### Fixed
 

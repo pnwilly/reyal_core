@@ -1,4 +1,5 @@
 import pytest
+from conftest import ValidationError
 
 PAYMENT_OPTIONS = "PMT-.POSTYY.POSTMM.#\nTRF-.POSTYY.POSTMM.#"
 
@@ -51,6 +52,16 @@ def drafts(load_with_fake_frappe, monkeypatch):
 	return module
 
 
+@pytest.mark.parametrize(
+	("payment_type", "series"), [("Internal Transfer", "TRF-"), ("Pay", "PMT-"), ("Receive", "PMT-")]
+)
+def test_payment_takes_the_series_for_its_type(drafts, payment_type, series):
+	doc = payment(payment_type, naming_series="PMT-.POSTYY.POSTMM.#")
+	drafts.set_draft_series(doc)
+
+	assert doc.naming_series == f"{series}.POSTYY.POSTMM.#"
+
+
 def test_other_doctypes_use_their_series_field_or_naming(drafts):
 	journal = FakeDoc("Journal Entry", FakeMeta({"naming_series"}), naming_series="JE-.POSTYY.POSTMM.##")
 	transfer = FakeDoc("Share Transfer", FakeMeta(autoname="SHT-.DATEYY.DATEMM.#"))
@@ -70,6 +81,16 @@ def test_draft_moved_to_another_period_is_renamed(drafts):
 	assert drafts.renames == [(doc, "PMT-.POSTYY.POSTMM.#", "PMT-.POSTYY.POSTMM.#", previous)]
 
 
+def test_draft_switched_to_transfer_takes_the_transfer_series(drafts):
+	previous = payment(naming_series="PMT-.POSTYY.POSTMM.#", period="2610")
+	doc = payment("Internal Transfer", name="PMT-26101", naming_series="PMT-.POSTYY.POSTMM.#", period="2610")
+	doc.previous = previous
+	drafts.keep_draft_name_current(doc)
+
+	assert (doc.naming_series, previous.naming_series) == ("TRF-.POSTYY.POSTMM.#", "TRF-.POSTYY.POSTMM.#")
+	assert drafts.renames == [(doc, "TRF-.POSTYY.POSTMM.#", "PMT-.POSTYY.POSTMM.#", previous)]
+
+
 @pytest.mark.parametrize(
 	"changes",
 	[{"new": True}, {"docstatus": 1}, {"amended_from": "PMT-26101"}, {"period": "2610"}],
@@ -81,3 +102,10 @@ def test_new_submitted_amended_or_matching_documents_keep_their_name(drafts, cha
 	drafts.keep_draft_name_current(doc)
 
 	assert drafts.renames == []
+
+
+def test_missing_payment_series_stops_the_save(drafts):
+	doc = FakeDoc("Payment Entry", FakeMeta({"naming_series"}, "ACC-PAY-.YYYY.-"), payment_type="Pay")
+
+	with pytest.raises(ValidationError):
+		drafts.payment_series(doc)
