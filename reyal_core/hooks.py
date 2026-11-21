@@ -30,6 +30,8 @@ naming_series_variables = {
 	"ABBR": "reyal_core.naming.company_abbr",
 }
 
+extend_doctype_class = {"Share Transfer": ["reyal_core.shares.ShareTransferFolio"]}
+
 # Install / migrate hooks:
 
 after_install = "reyal_core.setup.install.after_install"

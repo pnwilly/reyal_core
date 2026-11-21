@@ -12,6 +12,7 @@ The format is based on Keep a Changelog.
 - Name Salary Structure Assignments `SSA-.FROMYY.FROMMM.#` on sites with HRMS: the year and month come from the From Date instead of the day the assignment is saved
 - Name Share Transfers `SHT-.DATEYY.DATEMM.#` on sites with ERPNext: the year and month come from the transfer date
 - Name Shareholders `SH-.ABBR.-.#` on sites with ERPNext: the Series field offers only this series, prefixed with the company abbreviation
+- Number a new shareholder's folio `FN.##` instead of ERPNext's `FN.#####` when a Share Transfer leaves the folio blank
 - Name Journal Entries `JE-.POSTYY.POSTMM.##` and Payment Entries `PMT-.POSTYY.POSTMM.#` (or `TRF-.POSTYY.POSTMM.#`) on sites with ERPNext: the year and month come from the posting date, so an entry posted to an earlier period is named for that period
 - Name Additional Salaries `ADS-.PAYYY.PAYMM.#` and Holiday List Assignments `HLA-.FROMYY.FROMMM.#` on sites with HRMS
 - Add the `DATEYY`, `DATEMM`, `POSTYY`, `POSTMM`, `PAYYY`, `PAYMM` and `ABBR` naming variables for any naming series

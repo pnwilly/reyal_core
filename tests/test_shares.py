@@ -41,6 +41,35 @@ def test_share_naming_is_created_and_owned_by_reyal(load_with_fake_frappe):
 	]
 
 
+class FakeShareholder:
+	def __init__(self):
+		self.folio_no = None
+		self.saved = False
+
+	def save(self):
+		self.saved = True
+
+
+@pytest.mark.parametrize("is_company", [False, True])
+def test_new_folio_is_numbered_fn_with_two_digits(load_with_fake_frappe, is_company):
+	shares, calls = load_with_fake_frappe("reyal_core.shares")
+	holders = {"person": FakeShareholder(), "company": FakeShareholder()}
+	transfer = type(
+		"Transfer",
+		(shares.ShareTransferFolio,),
+		{
+			"get_shareholder_doc": lambda self, name: holders["person"],
+			"get_company_shareholder": lambda self: holders["company"],
+		},
+	)()
+
+	folio = transfer.autoname_folio("person", is_company=is_company)
+	holder = holders["company" if is_company else "person"]
+
+	assert (folio, holder.folio_no, holder.saved) == ("FN01", "FN01", True)
+	assert calls == [("autoname", "FN.##")]
+
+
 def test_share_naming_is_skipped_without_erpnext(load_with_fake_frappe):
 	shares, calls = load_with_fake_frappe("reyal_core.shares")
 	shares.set_share_naming()

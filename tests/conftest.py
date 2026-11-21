@@ -38,9 +38,13 @@ def load_with_fake_frappe(monkeypatch):
 		fake_property_setter.make_property_setter = lambda *args, **kwargs: calls.append(
 			("make", args, kwargs)
 		)
+		fake_naming = ModuleType("frappe.model.naming")
+		fake_naming.make_autoname = lambda key: calls.append(("autoname", key)) or key.replace(".##", "01")
 		modules = {
 			"frappe": fake_frappe,
 			"frappe.utils": fake_utils,
+			"frappe.model": ModuleType("frappe.model"),
+			"frappe.model.naming": fake_naming,
 			"frappe.custom": ModuleType("frappe.custom"),
 			"frappe.custom.doctype": ModuleType("frappe.custom.doctype"),
 			"frappe.custom.doctype.property_setter": ModuleType("frappe.custom.doctype.property_setter"),
