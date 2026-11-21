@@ -9,7 +9,7 @@ Shared Frappe utilities used by Reyal sites and apps.
 | `v16` (default) | 16.x | 3.14+ |
 | `v15` | 15.x | 3.10+ |
 
-This README describes `v16`. Payroll naming needs HRMS; everything else needs only Frappe.
+This README describes `v16`. Payroll naming needs HRMS and share naming needs ERPNext; everything else needs only Frappe.
 
 ## Installation
 
@@ -28,16 +28,22 @@ Use `--branch v15` on a Frappe v15 bench.
 - **Email Communication form**: a saved email reads like a message, with a pinned subject, a sent or received arrow, the sender and recipients (linked Contacts by name), delivery and read chips, and one Linked to line per document type.
 - **Amended originals** (off by default): a cancelled document that has been amended can be deleted. The amendment keeps its name, and the deleted number is not reused.
 
-## Payroll naming
+## Document naming
 
-On sites with HRMS, payroll documents are named after the period they cover, not the day they are saved.
+Payroll and share documents are named after the period or company they belong to, not the day they are saved.
 
-| Doctype | Naming | Example |
-|---|---|---|
-| Payroll Entry | `PROL-.ENDYY.ENDMM.#` | `PROL-26101`: first payroll ending October 2026 |
-| Salary Structure Assignment | `SSA-.FROMYY.FROMMM.##` | `SSA-260701`: first assignment from July 2026 |
+| Doctype | Naming | Example | Needs |
+|---|---|---|---|
+| Payroll Entry | `PROL-.ENDYY.ENDMM.#` | `PROL-26101`: first payroll ending October 2026 | HRMS |
+| Salary Structure Assignment | `SSA-.FROMYY.FROMMM.#` | `SSA-26071`: first assignment from July 2026 | HRMS |
+| Share Transfer | `SHT-.DATEYY.DATEMM.#` | `SHT-24071`: first transfer dated July 2024 | ERPNext |
+| Shareholder | `SH-.ABBR.-.#` (Series field) | `SH-OCS-1`: first shareholder of the company abbreviated OCS | ERPNext |
+| Journal Entry | `JE-.POSTYY.POSTMM.##` (Series field) | `JE-240701`: first journal posted in July 2024 | ERPNext |
+| Payment Entry | `PMT-.POSTYY.POSTMM.#`, or `TRF-.POSTYY.POSTMM.#` for transfers (Series field) | `PMT-26101`: first payment posted in October 2026 | ERPNext |
+| Additional Salary | `ADS-.PAYYY.PAYMM.#` (Series field) | `ADS-26111`: first additional salary for November 2026 | HRMS |
+| Holiday List Assignment | `HLA-.FROMYY.FROMMM.#` (Series field) | `HLA-26011`: first assignment from January 2026 | HRMS |
 
-Install and migrate set this naming. Other naming series can use the same variables: `ENDYY` and `ENDMM` read End Date, `FROMYY` and `FROMMM` read From Date.
+Install and migrate set this naming. Other naming series can use the same variables: `ENDYY` and `ENDMM` read End Date, `FROMYY` and `FROMMM` read From Date, `DATEYY` and `DATEMM` read Date, `POSTYY` and `POSTMM` read Posting Date, `PAYYY` and `PAYMM` read Payroll Date, and `ABBR` is the company's abbreviation.
 
 ## Settings
 

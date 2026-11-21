@@ -1,54 +1,11 @@
-import datetime
-import importlib
-import sys
-from types import ModuleType, SimpleNamespace
-
 import pytest
+from conftest import ValidationError
+
+PAYROLL_DOCTYPES = ("Payroll Entry", "Salary Structure Assignment")
 
 
-class ValidationError(Exception):
-	pass
-
-
-def load_payroll(monkeypatch, doctypes=("Payroll Entry", "Salary Structure Assignment"), setters=()):
-	calls = []
-
-	def throw(message):
-		raise ValidationError(message)
-
-	def exists(doctype, name):
-		return name in (doctypes if doctype == "DocType" else setters)
-
-	fake_frappe = ModuleType("frappe")
-	fake_frappe._ = lambda text: text
-	fake_frappe.throw = throw
-	fake_frappe.clear_cache = lambda doctype: calls.append(("clear_cache", doctype))
-	fake_frappe.db = SimpleNamespace(
-		exists=exists,
-		set_value=lambda doctype, name, values: calls.append(("set_value", name, values)),
-	)
-	fake_utils = ModuleType("frappe.utils")
-	fake_utils.getdate = lambda value: datetime.date.fromisoformat(value)
-	fake_property_setter = ModuleType("frappe.custom.doctype.property_setter.property_setter")
-	fake_property_setter.make_property_setter = lambda *args, **kwargs: calls.append(("make", args, kwargs))
-	modules = {
-		"frappe": fake_frappe,
-		"frappe.utils": fake_utils,
-		"frappe.custom": ModuleType("frappe.custom"),
-		"frappe.custom.doctype": ModuleType("frappe.custom.doctype"),
-		"frappe.custom.doctype.property_setter": ModuleType("frappe.custom.doctype.property_setter"),
-		"frappe.custom.doctype.property_setter.property_setter": fake_property_setter,
-	}
-	for name, module in modules.items():
-		monkeypatch.setitem(sys.modules, name, module)
-
-	import reyal_core.payroll as payroll
-
-	return importlib.reload(payroll), calls
-
-
-def test_end_date_sets_the_year_and_month(monkeypatch):
-	payroll, _ = load_payroll(monkeypatch)
+def test_end_date_sets_the_year_and_month(load_with_fake_frappe):
+	payroll, _ = load_with_fake_frappe("reyal_core.payroll", PAYROLL_DOCTYPES)
 	october = {"end_date": "2026-10-31"}
 	june = {"end_date": "2043-06-30"}
 
@@ -56,53 +13,79 @@ def test_end_date_sets_the_year_and_month(monkeypatch):
 	assert (payroll.payroll_end_year(june), payroll.payroll_end_month(june)) == ("43", "06")
 
 
-def test_from_date_sets_the_year_and_month(monkeypatch):
-	payroll, _ = load_payroll(monkeypatch)
+def test_from_date_sets_the_year_and_month(load_with_fake_frappe):
+	payroll, _ = load_with_fake_frappe("reyal_core.payroll", PAYROLL_DOCTYPES)
 	assignment = {"from_date": "2026-07-01", "end_date": "2026-12-31"}
 
 	assert (payroll.from_year(assignment, "FROMYY"), payroll.from_month(assignment, "FROMMM")) == ("26", "07")
 
 
+def test_payroll_date_sets_the_year_and_month(load_with_fake_frappe):
+	payroll, _ = load_with_fake_frappe("reyal_core.payroll", PAYROLL_DOCTYPES)
+	additional_salary = {"payroll_date": "2026-11-30"}
+
+	assert (payroll.payroll_year(additional_salary), payroll.payroll_month(additional_salary)) == ("26", "11")
+
+
 @pytest.mark.parametrize(
 	("variable", "doc"),
-	[("payroll_end_year", None), ("payroll_end_month", {}), ("from_year", {"from_date": None})],
+	[
+		("payroll_end_year", None),
+		("payroll_end_month", {}),
+		("from_year", {"from_date": None}),
+		("payroll_month", {}),
+	],
 )
-def test_naming_date_is_required(monkeypatch, variable, doc):
-	payroll, _ = load_payroll(monkeypatch)
+def test_naming_date_is_required(load_with_fake_frappe, variable, doc):
+	payroll, _ = load_with_fake_frappe("reyal_core.payroll", PAYROLL_DOCTYPES)
 
 	with pytest.raises(ValidationError):
 		getattr(payroll, variable)(doc)
 
 
-def test_naming_is_created_and_owned_by_reyal(monkeypatch):
-	payroll, calls = load_payroll(monkeypatch)
+def test_naming_is_created_and_owned_by_reyal(load_with_fake_frappe):
+	payroll, calls = load_with_fake_frappe("reyal_core.payroll", PAYROLL_DOCTYPES)
 	payroll.set_payroll_naming()
 
 	assert [call[1][:4] for call in calls if call[0] == "make"] == [
 		("Payroll Entry", None, "autoname", "PROL-.ENDYY.ENDMM.#"),
-		("Salary Structure Assignment", None, "autoname", "SSA-.FROMYY.FROMMM.##"),
+		("Salary Structure Assignment", None, "autoname", "SSA-.FROMYY.FROMMM.#"),
 	]
 	assert [call for call in calls if call[0] == "set_value"] == [
 		("set_value", "Payroll Entry-main-autoname", {"value": "PROL-.ENDYY.ENDMM.#", "module": "Reyal"}),
 		(
 			"set_value",
 			"Salary Structure Assignment-main-autoname",
-			{"value": "SSA-.FROMYY.FROMMM.##", "module": "Reyal"},
+			{"value": "SSA-.FROMYY.FROMMM.#", "module": "Reyal"},
 		),
 	]
 
 
-def test_existing_naming_is_updated_in_place(monkeypatch):
-	payroll, calls = load_payroll(
-		monkeypatch, doctypes=("Payroll Entry",), setters=("Payroll Entry-main-autoname",)
+def test_payroll_series_are_offered_on_the_series_field(load_with_fake_frappe):
+	payroll, calls = load_with_fake_frappe(
+		"reyal_core.payroll", ("Additional Salary", "Holiday List Assignment")
+	)
+	payroll.set_payroll_naming()
+
+	assert [call[1][:4] for call in calls if call[0] == "make"] == [
+		("Additional Salary", "naming_series", "options", "ADS-.PAYYY.PAYMM.#"),
+		("Additional Salary", "naming_series", "default", "ADS-.PAYYY.PAYMM.#"),
+		("Holiday List Assignment", "naming_series", "options", "HLA-.FROMYY.FROMMM.#"),
+		("Holiday List Assignment", "naming_series", "default", "HLA-.FROMYY.FROMMM.#"),
+	]
+
+
+def test_existing_naming_is_updated_in_place(load_with_fake_frappe):
+	payroll, calls = load_with_fake_frappe(
+		"reyal_core.payroll", ("Payroll Entry",), setters=("Payroll Entry-main-autoname",)
 	)
 	payroll.set_payroll_naming()
 
 	assert [call[0] for call in calls] == ["set_value", "clear_cache"]
 
 
-def test_naming_is_skipped_without_hrms(monkeypatch):
-	payroll, calls = load_payroll(monkeypatch, doctypes=())
+def test_naming_is_skipped_without_hrms(load_with_fake_frappe):
+	payroll, calls = load_with_fake_frappe("reyal_core.payroll")
 	payroll.set_payroll_naming()
 
 	assert calls == []
