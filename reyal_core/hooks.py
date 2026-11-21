@@ -21,6 +21,13 @@ naming_series_variables = {
 	"ENDMM": "reyal_core.payroll.payroll_end_month",
 	"FROMYY": "reyal_core.payroll.from_year",
 	"FROMMM": "reyal_core.payroll.from_month",
+	"PAYYY": "reyal_core.payroll.payroll_year",
+	"PAYMM": "reyal_core.payroll.payroll_month",
+	"POSTYY": "reyal_core.naming.posting_year",
+	"POSTMM": "reyal_core.naming.posting_month",
+	"DATEYY": "reyal_core.naming.date_year",
+	"DATEMM": "reyal_core.naming.date_month",
+	"ABBR": "reyal_core.naming.company_abbr",
 }
 
 # Install / migrate hooks:

@@ -9,7 +9,12 @@ The format is based on Keep a Changelog.
 ### Added
 
 - Name Payroll Entries `PROL-.ENDYY.ENDMM.#` on sites with HRMS: the year and month come from the payroll period's end date, set on install and migrate; this moves the naming from Kaida so sites without Kaida get it
-- Name Salary Structure Assignments `SSA-.FROMYY.FROMMM.##` on sites with HRMS: the year and month come from the From Date instead of the day the assignment is saved
+- Name Salary Structure Assignments `SSA-.FROMYY.FROMMM.#` on sites with HRMS: the year and month come from the From Date instead of the day the assignment is saved
+- Name Share Transfers `SHT-.DATEYY.DATEMM.#` on sites with ERPNext: the year and month come from the transfer date
+- Name Shareholders `SH-.ABBR.-.#` on sites with ERPNext: the Series field offers only this series, prefixed with the company abbreviation
+- Name Journal Entries `JE-.POSTYY.POSTMM.##` and Payment Entries `PMT-.POSTYY.POSTMM.#` (or `TRF-.POSTYY.POSTMM.#`) on sites with ERPNext: the year and month come from the posting date, so an entry posted to an earlier period is named for that period
+- Name Additional Salaries `ADS-.PAYYY.PAYMM.#` and Holiday List Assignments `HLA-.FROMYY.FROMMM.#` on sites with HRMS
+- Add the `DATEYY`, `DATEMM`, `POSTYY`, `POSTMM`, `PAYYY`, `PAYMM` and `ABBR` naming variables for any naming series
 
 ## [0.0.16] - 2026-11-19
 

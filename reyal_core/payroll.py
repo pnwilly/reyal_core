@@ -1,11 +1,14 @@
 import frappe
-from frappe import _
-from frappe.custom.doctype.property_setter.property_setter import make_property_setter
-from frappe.utils import getdate
+
+from reyal_core.naming import get_naming_date, set_naming, set_naming_series
 
 PAYROLL_NAMING = {
 	"Payroll Entry": "PROL-.ENDYY.ENDMM.#",
-	"Salary Structure Assignment": "SSA-.FROMYY.FROMMM.##",
+	"Salary Structure Assignment": "SSA-.FROMYY.FROMMM.#",
+}
+PAYROLL_SERIES = {
+	"Additional Salary": "ADS-.PAYYY.PAYMM.#",
+	"Holiday List Assignment": "HLA-.FROMYY.FROMMM.#",
 }
 
 
@@ -29,12 +32,14 @@ def from_month(doc, variable=None):
 	return get_naming_date(doc, "from_date").strftime("%m")
 
 
-def get_naming_date(doc, fieldname):
-	value = doc.get(fieldname) if doc else None
-	if not value:
-		label = fieldname.replace("_", " ")
-		frappe.throw(_("Set the {0} before naming this document.").format(label))
-	return getdate(value)
+def payroll_year(doc, variable=None):
+	"""Two-digit year of the Payroll Date, for the PAYYY naming variable."""
+	return get_naming_date(doc, "payroll_date").strftime("%y")
+
+
+def payroll_month(doc, variable=None):
+	"""Two-digit month of the Payroll Date, for the PAYMM naming variable."""
+	return get_naming_date(doc, "payroll_date").strftime("%m")
 
 
 def set_payroll_naming():
@@ -42,14 +47,6 @@ def set_payroll_naming():
 	for doctype, naming in PAYROLL_NAMING.items():
 		if frappe.db.exists("DocType", doctype):
 			set_naming(doctype, naming)
-
-
-def set_naming(doctype, naming):
-	"""Set a doctype's naming through a Property Setter that Reyal owns."""
-	setter = f"{doctype}-main-autoname"
-	if not frappe.db.exists("Property Setter", setter):
-		make_property_setter(
-			doctype, None, "autoname", naming, "Data", for_doctype=True, is_system_generated=False
-		)
-	frappe.db.set_value("Property Setter", setter, {"value": naming, "module": "Reyal"})
-	frappe.clear_cache(doctype=doctype)
+	for doctype, series in PAYROLL_SERIES.items():
+		if frappe.db.exists("DocType", doctype):
+			set_naming_series(doctype, series)
