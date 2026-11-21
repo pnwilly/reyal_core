@@ -17,6 +17,10 @@ The format is based on Keep a Changelog.
 - Name Additional Salaries `ADS-.PAYYY.PAYMM.#` and Holiday List Assignments `HLA-.FROMYY.FROMMM.#` on sites with HRMS
 - Add the `DATEYY`, `DATEMM`, `POSTYY`, `POSTMM`, `PAYYY`, `PAYMM` and `ABBR` naming variables for any naming series
 
+### Fixed
+
+- Keep a folio typed on a Share Transfer: the From and To Folio fields fill from the shareholder only when blank, instead of being cleared for a new shareholder and renumbered
+
 ## [0.0.16] - 2026-11-19
 
 ### Changed
