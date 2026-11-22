@@ -25,7 +25,7 @@ def keep_draft_name_current(doc, method=None):
 	if not series:
 		return
 	previous = doc.get_doc_before_save()
-	old_series = series_for(previous) if previous else series
+	old_series = (previous.get("naming_series") or series_for(previous)) if previous else series
 	if doc.meta.has_field("naming_series") and doc.naming_series != series:
 		doc.naming_series = series
 		if previous:
@@ -38,7 +38,8 @@ def series_for(doc):
 	if doc.doctype == "Payment Entry":
 		return payment_series(doc)
 	if doc.meta.has_field("naming_series"):
-		return doc.naming_series
+		options = [option for option in (doc.meta.get_options("naming_series") or "").split("\n") if option]
+		return doc.naming_series if doc.naming_series in options or not options else options[0]
 	autoname = doc.meta.autoname or ""
 	return autoname if "#" in autoname else None
 
