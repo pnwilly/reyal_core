@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog.
 
+## [Unreleased]
+
+### Changed
+
+- Mention the PR author only once the PR's other checks, CodeQL included, have finished, with their result, instead of as soon as the PR opens
+
 ## [0.0.17] - 2026-11-22
 
 ### Added
