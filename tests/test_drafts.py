@@ -72,6 +72,23 @@ def test_other_doctypes_use_their_series_field_or_naming(drafts):
 	assert drafts.series_for(unnamed) is None
 
 
+def test_draft_on_a_retired_series_moves_to_the_current_one(drafts):
+	options = "JE-.POSTYY.POSTMM.##"
+	previous = FakeDoc("Journal Entry", FakeMeta({"naming_series"}, options), naming_series="JE-.YY.MM.##")
+	doc = FakeDoc(
+		"Journal Entry",
+		FakeMeta({"naming_series"}, options),
+		name="JE-261119",
+		naming_series="JE-.YY.MM.##",
+		period="2607",
+	)
+	doc.previous = previous
+	drafts.keep_draft_name_current(doc)
+
+	assert doc.naming_series == "JE-.POSTYY.POSTMM.##"
+	assert drafts.renames == [(doc, "JE-.POSTYY.POSTMM.##", "JE-.YY.MM.##", previous)]
+
+
 def test_draft_moved_to_another_period_is_renamed(drafts):
 	previous = payment(naming_series="PMT-.POSTYY.POSTMM.#", period="2610")
 	doc = payment(name="PMT-26101", naming_series="PMT-.POSTYY.POSTMM.#", period="2611", previous=None)

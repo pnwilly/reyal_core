@@ -21,6 +21,7 @@ The format is based on Keep a Changelog.
 
 ### Fixed
 
+- Move a draft saved on a retired naming series, such as `JE-.YY.MM.##` or `ACC-JV-.YYYY.-`, to the current series when it is renamed for its period, instead of judging its name against the retired series and leaving it in place
 - Keep a folio typed on a Share Transfer: the From and To Folio fields fill from the shareholder only when blank, instead of being cleared for a new shareholder and renumbered
 
 ## [0.0.16] - 2026-11-19
