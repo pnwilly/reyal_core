@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog.
 
+## [Unreleased]
+
+### Added
+
+- Name Salary Slips `SS/.employee./.#` on sites with HRMS, numbered per employee, instead of HRMS's `Sal Slip/<employee>/.#####`; submitted slips keep their names
+
 ## [0.0.18] - 2026-11-22
 
 ### Changed

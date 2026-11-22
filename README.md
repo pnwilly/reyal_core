@@ -36,6 +36,7 @@ Payroll and share documents are named after the period or company they belong to
 |---|---|---|---|
 | Payroll Entry | `PROL-.ENDYY.ENDMM.#` | `PROL-26101`: first payroll ending October 2026 | HRMS |
 | Salary Structure Assignment | `SSA-.FROMYY.FROMMM.#` | `SSA-26071`: first assignment from July 2026 | HRMS |
+| Salary Slip | `SS/.employee./.#` | `SS/OCS_E01/1`: employee OCS_E01's first slip | HRMS |
 | Share Transfer | `SHT-.DATEYY.DATEMM.#` | `SHT-24071`: first transfer dated July 2024 | ERPNext |
 | Shareholder | `SH-.ABBR.-.#` (Series field) | `SH-OCS-1`: first shareholder of the company abbreviated OCS | ERPNext |
 | Shareholder folio no. | `FN.##`, set by the first Share Transfer unless one is typed | `FN01`: the site's first folio | ERPNext |
