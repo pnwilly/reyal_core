@@ -1,7 +1,7 @@
 import pytest
 from conftest import ValidationError
 
-PAYROLL_DOCTYPES = ("Payroll Entry", "Salary Structure Assignment")
+PAYROLL_DOCTYPES = ("Payroll Entry", "Salary Structure Assignment", "Salary Slip")
 
 
 def test_end_date_sets_the_year_and_month(load_with_fake_frappe):
@@ -50,6 +50,7 @@ def test_naming_is_created_and_owned_by_reyal(load_with_fake_frappe):
 	assert [call[1][:4] for call in calls if call[0] == "make"] == [
 		("Payroll Entry", None, "autoname", "PROL-.ENDYY.ENDMM.#"),
 		("Salary Structure Assignment", None, "autoname", "SSA-.FROMYY.FROMMM.#"),
+		("Salary Slip", None, "autoname", "SS/.employee./.#"),
 	]
 	assert [call for call in calls if call[0] == "set_value"] == [
 		("set_value", "Payroll Entry-main-autoname", {"value": "PROL-.ENDYY.ENDMM.#", "module": "Reyal"}),
@@ -58,6 +59,7 @@ def test_naming_is_created_and_owned_by_reyal(load_with_fake_frappe):
 			"Salary Structure Assignment-main-autoname",
 			{"value": "SSA-.FROMYY.FROMMM.#", "module": "Reyal"},
 		),
+		("set_value", "Salary Slip-main-autoname", {"value": "SS/.employee./.#", "module": "Reyal"}),
 	]
 
 

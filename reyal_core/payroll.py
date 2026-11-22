@@ -5,6 +5,7 @@ from reyal_core.naming import get_naming_date, set_naming, set_naming_series
 PAYROLL_NAMING = {
 	"Payroll Entry": "PROL-.ENDYY.ENDMM.#",
 	"Salary Structure Assignment": "SSA-.FROMYY.FROMMM.#",
+	"Salary Slip": "SS/.employee./.#",
 }
 PAYROLL_SERIES = {
 	"Additional Salary": "ADS-.PAYYY.PAYMM.#",
