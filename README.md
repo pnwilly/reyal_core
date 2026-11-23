@@ -42,12 +42,15 @@ Payroll and share documents are named after the period or company they belong to
 | Shareholder folio no. | `FN.##`, set by the first Share Transfer unless one is typed | `FN01`: the site's first folio | ERPNext |
 | Journal Entry | `JE-.POSTYY.POSTMM.##` (Series field) | `JE-240701`: first journal posted in July 2024 | ERPNext |
 | Payment Entry | `PMT-.POSTYY.POSTMM.#`, or `TRF-.POSTYY.POSTMM.#` for transfers (Series field) | `PMT-26101`: first payment posted in October 2026 | ERPNext |
+| Purchase Invoice | `Bill-.POSTYY.POSTMM.#`, or `Bill-RET-.POSTYY.POSTMM.#` for returns (Series field) | `Bill-26031`: first bill posted in March 2026 | ERPNext |
+| Purchase Receipt | `GR-.POSTYY.POSTMM.#`, or `GR-RET-.POSTYY.POSTMM.#` for returns (Series field) | `GR-26111`: first goods receipt posted in November 2026 | ERPNext |
+| Sales Order | `SO-.TRANSYY.TRANSMM.#` (Series field) | `SO-26111`: first sales order dated November 2026 | ERPNext |
 | Additional Salary | `ADS-.PAYYY.PAYMM.#` (Series field) | `ADS-26111`: first additional salary for November 2026 | HRMS |
 | Holiday List Assignment | `HLA-.FROMYY.FROMMM.#` (Series field) | `HLA-26011`: first assignment from January 2026 | HRMS |
 
 A saved draft is renamed when its dates move it to another period, for example a payment moved from 31 October to 2 November goes from `PMT-26101` to `PMT-26111`. Its comments, attachments, to-dos and version history move with it, and the old number is given back when it was the last one used. Submitted, cancelled and amended documents keep their names. A Payment Entry takes the `TRF-` series when it is an Internal Transfer and `PMT-` otherwise, on insert and when a draft's Payment Type changes.
 
-Install and migrate set this naming. Other naming series can use the same variables: `ENDYY` and `ENDMM` read End Date, `FROMYY` and `FROMMM` read From Date, `DATEYY` and `DATEMM` read Date, `POSTYY` and `POSTMM` read Posting Date, `PAYYY` and `PAYMM` read Payroll Date, and `ABBR` is the company's abbreviation.
+Install and migrate set this naming. Other naming series can use the same variables: `ENDYY` and `ENDMM` read End Date, `FROMYY` and `FROMMM` read From Date, `DATEYY` and `DATEMM` read Date, `POSTYY` and `POSTMM` read Posting Date, `TRANSYY` and `TRANSMM` read Transaction Date, `PAYYY` and `PAYMM` read Payroll Date, and `ABBR` is the company's abbreviation.
 
 ## Settings
 

@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog.
 
+## [Unreleased]
+
+### Added
+
+- Name bills (Purchase Invoices) `Bill-.POSTYY.POSTMM.#`, or `Bill-RET-.POSTYY.POSTMM.#` for returns, on sites with ERPNext: the year and month come from the posting date, so a March invoice entered in November is named for March; a draft is renamed when its posting date moves it to another month
+- Name Purchase Receipts `GR-.POSTYY.POSTMM.#` (returns `GR-RET-.POSTYY.POSTMM.#`) by posting date and Sales Orders `SO-.TRANSYY.TRANSMM.#` by transaction date, with drafts renamed when their date moves them to another month
+- Add the `TRANSYY` and `TRANSMM` naming variables, read from Transaction Date
+
 ## [0.0.19] - 2026-11-23
 
 ### Added

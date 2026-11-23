@@ -27,6 +27,8 @@ naming_series_variables = {
 	"POSTMM": "reyal_core.naming.posting_month",
 	"DATEYY": "reyal_core.naming.date_year",
 	"DATEMM": "reyal_core.naming.date_month",
+	"TRANSYY": "reyal_core.naming.transaction_year",
+	"TRANSMM": "reyal_core.naming.transaction_month",
 	"ABBR": "reyal_core.naming.company_abbr",
 }
 
@@ -61,6 +63,9 @@ doc_events = {
 		"before_validate": "reyal_core.drafts.keep_draft_name_current",
 	},
 	"Journal Entry": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
+	"Purchase Invoice": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
+	"Purchase Receipt": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
+	"Sales Order": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
 	"Share Transfer": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
 	"Payroll Entry": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
 	"Salary Structure Assignment": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
