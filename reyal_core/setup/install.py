@@ -2,6 +2,7 @@ import frappe
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 
 from reyal_core.accounts import set_accounting_naming
+from reyal_core.assets import set_asset_naming
 from reyal_core.payroll import set_payroll_naming
 from reyal_core.shares import set_share_naming
 
@@ -26,6 +27,7 @@ def after_install():
 	set_payroll_naming()
 	set_share_naming()
 	set_accounting_naming()
+	set_asset_naming()
 	frappe.db.commit()
 
 
