@@ -29,6 +29,10 @@ naming_series_variables = {
 	"DATEMM": "reyal_core.naming.date_month",
 	"TRANSYY": "reyal_core.naming.transaction_year",
 	"TRANSMM": "reyal_core.naming.transaction_month",
+	"PURYY": "reyal_core.assets.purchase_year",
+	"PURMM": "reyal_core.assets.purchase_month",
+	"FAILYY": "reyal_core.assets.failure_year",
+	"FAILMM": "reyal_core.assets.failure_month",
 	"ABBR": "reyal_core.naming.company_abbr",
 }
 
@@ -66,6 +70,11 @@ doc_events = {
 	"Purchase Invoice": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
 	"Purchase Receipt": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
 	"Sales Order": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
+	"Asset": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
+	"Asset Capitalization": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
+	"Asset Movement": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
+	"Asset Repair": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
+	"Asset Value Adjustment": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
 	"Share Transfer": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
 	"Payroll Entry": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
 	"Salary Structure Assignment": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},

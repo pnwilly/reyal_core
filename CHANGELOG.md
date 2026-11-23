@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog.
 
+## [Unreleased]
+
+### Added
+
+- Name Assets `.ABBR.-.PURYY.PURMM.#` by company and purchase month, Asset Capitalizations `ASC-.POSTYY.POSTMM.#`, Asset Movements `ASM-.TRANSYY.TRANSMM.#`, Asset Repairs `ASR-.FAILYY.FAILMM.#` and Asset Value Adjustments `AVA-.DATEYY.DATEMM.#` on sites with ERPNext, with drafts renamed when their date or company moves them
+- Add the `PURYY` and `PURMM` naming variables, read from Purchase Date, and `FAILYY` and `FAILMM`, read from Failure Date
+
 ## [0.0.20] - 2026-11-23
 
 ### Added
