@@ -1,4 +1,4 @@
-name: Notify Me on My PRs
+name: Assign and Notify Me on My PRs
 
 on:
   pull_request:
@@ -15,7 +15,7 @@ jobs:
     timeout-minutes: 25
 
     steps:
-      - name: Mention PR author once the other checks finish
+      - name: Assign and mention PR author once the other checks finish
         uses: actions/github-script@v8
         with:
           script: |
@@ -60,6 +60,15 @@ jobs:
                   ? "all checks passed"
                   : "no checks ran";
             const kind = pr.draft ? "draft PR" : "PR";
+
+            if (!pr.assignees?.some((assignee) => assignee.login === pr.user.login)) {
+              await github.rest.issues.addAssignees({
+                owner,
+                repo,
+                issue_number,
+                assignees: [pr.user.login],
+              });
+            }
 
             await github.rest.issues.createComment({
               owner,

@@ -11,6 +11,10 @@ The format is based on Keep a Changelog.
 - Name Assets `.ABBR.-.PURYY.PURMM.#` by company and purchase month, Asset Capitalizations `ASC-.POSTYY.POSTMM.#`, Asset Movements `ASM-.TRANSYY.TRANSMM.#`, Asset Repairs `ASR-.FAILYY.FAILMM.#` and Asset Value Adjustments `AVA-.DATEYY.DATEMM.#` on sites with ERPNext, with drafts renamed when their date or company moves them
 - Add the `PURYY` and `PURMM` naming variables, read from Purchase Date, and `FAILYY` and `FAILMM`, read from Failure Date
 
+### Changed
+
+- Assign the PR author, then post the ready comment, once the PR's other checks have finished; the workflow used to comment without assigning
+
 ## [0.0.20] - 2026-11-23
 
 ### Added
