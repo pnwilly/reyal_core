@@ -9,6 +9,16 @@ def test_posting_date_sets_the_year_and_month(load_with_fake_frappe):
 	assert (naming.posting_year(journal, "POSTYY"), naming.posting_month(journal, "POSTMM")) == ("24", "07")
 
 
+def test_transaction_date_sets_the_year_and_month(load_with_fake_frappe):
+	naming, _ = load_with_fake_frappe("reyal_core.naming")
+	order = {"transaction_date": "2026-11-05"}
+
+	year = naming.transaction_year(order, "TRANSYY")
+	month = naming.transaction_month(order, "TRANSMM")
+
+	assert (year, month) == ("26", "11")
+
+
 def test_posting_date_is_required(load_with_fake_frappe):
 	naming, _ = load_with_fake_frappe("reyal_core.naming")
 
@@ -17,7 +27,10 @@ def test_posting_date_is_required(load_with_fake_frappe):
 
 
 def test_accounting_series_are_offered_with_the_first_as_default(load_with_fake_frappe):
-	accounts, calls = load_with_fake_frappe("reyal_core.accounts", ("Journal Entry", "Payment Entry"))
+	accounts, calls = load_with_fake_frappe(
+		"reyal_core.accounts",
+		("Journal Entry", "Payment Entry", "Purchase Invoice", "Purchase Receipt", "Sales Order"),
+	)
 	accounts.set_accounting_naming()
 
 	assert [call[1][:4] for call in calls if call[0] == "make"] == [
@@ -25,6 +38,12 @@ def test_accounting_series_are_offered_with_the_first_as_default(load_with_fake_
 		("Journal Entry", "naming_series", "default", "JE-.POSTYY.POSTMM.##"),
 		("Payment Entry", "naming_series", "options", "PMT-.POSTYY.POSTMM.#\nTRF-.POSTYY.POSTMM.#"),
 		("Payment Entry", "naming_series", "default", "PMT-.POSTYY.POSTMM.#"),
+		("Purchase Invoice", "naming_series", "options", "Bill-.POSTYY.POSTMM.#\nBill-RET-.POSTYY.POSTMM.#"),
+		("Purchase Invoice", "naming_series", "default", "Bill-.POSTYY.POSTMM.#"),
+		("Purchase Receipt", "naming_series", "options", "GR-.POSTYY.POSTMM.#\nGR-RET-.POSTYY.POSTMM.#"),
+		("Purchase Receipt", "naming_series", "default", "GR-.POSTYY.POSTMM.#"),
+		("Sales Order", "naming_series", "options", "SO-.TRANSYY.TRANSMM.#"),
+		("Sales Order", "naming_series", "default", "SO-.TRANSYY.TRANSMM.#"),
 	]
 
 

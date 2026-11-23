@@ -24,6 +24,16 @@ def posting_month(doc, variable=None):
 	return get_naming_date(doc, "posting_date").strftime("%m")
 
 
+def transaction_year(doc, variable=None):
+	"""Two-digit year of the Transaction Date, for the TRANSYY naming variable."""
+	return get_naming_date(doc, "transaction_date").strftime("%y")
+
+
+def transaction_month(doc, variable=None):
+	"""Two-digit month of the Transaction Date, for the TRANSMM naming variable."""
+	return get_naming_date(doc, "transaction_date").strftime("%m")
+
+
 def company_abbr(doc, variable=None):
 	"""The document's company abbreviation, for the ABBR naming variable."""
 	company = doc.get("company") if doc else None
