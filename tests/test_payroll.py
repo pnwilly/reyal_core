@@ -72,8 +72,10 @@ def test_payroll_series_are_offered_on_the_series_field(load_with_fake_frappe):
 	assert [call[1][:4] for call in calls if call[0] == "make"] == [
 		("Additional Salary", "naming_series", "options", "ADS-.PAYYY.PAYMM.#"),
 		("Additional Salary", "naming_series", "default", "ADS-.PAYYY.PAYMM.#"),
+		("Additional Salary", "naming_series", "hidden", "1"),
 		("Holiday List Assignment", "naming_series", "options", "HLA-.FROMYY.FROMMM.#"),
 		("Holiday List Assignment", "naming_series", "default", "HLA-.FROMYY.FROMMM.#"),
+		("Holiday List Assignment", "naming_series", "hidden", "1"),
 	]
 
 

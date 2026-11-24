@@ -57,11 +57,18 @@ def set_naming(doctype, naming):
 
 
 def set_naming_series(doctype, *series):
-	"""Offer these naming series on a doctype's Series field; the first is the default."""
-	values = {"options": "\n".join(series), "default": series[0]}
-	for property_name, value in values.items():
+	"""Offer these naming series on a doctype's Series field, the first as default, and hide the field.
+
+	reyal_core picks the series itself, so the field is never the user's choice.
+	"""
+	values = {
+		"options": ("\n".join(series), "Text"),
+		"default": (series[0], "Text"),
+		"hidden": ("1", "Check"),
+	}
+	for property_name, (value, property_type) in values.items():
 		setter = f"{doctype}-naming_series-{property_name}"
-		set_property(setter, doctype, "naming_series", property_name, value, "Text")
+		set_property(setter, doctype, "naming_series", property_name, value, property_type)
 	frappe.clear_cache(doctype=doctype)
 
 

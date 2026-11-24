@@ -59,7 +59,7 @@ def test_accounting_series_are_offered_with_the_first_as_default(load_with_fake_
 			offered.setdefault(doctype, {})[property_name] = value
 
 	assert offered == {
-		doctype: {"options": "\n".join(series), "default": series[0]}
+		doctype: {"options": "\n".join(series), "default": series[0], "hidden": "1"}
 		for doctype, series in ACCOUNTING_DOCTYPES.items()
 	}
 

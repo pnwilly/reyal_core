@@ -34,10 +34,13 @@ def test_asset_naming_is_created_and_owned_by_reyal(load_with_fake_frappe):
 	assert [call[1][:4] for call in calls if call[0] == "make"] == [
 		("Asset", "naming_series", "options", ".ABBR.-.PURYY.PURMM.#"),
 		("Asset", "naming_series", "default", ".ABBR.-.PURYY.PURMM.#"),
+		("Asset", "naming_series", "hidden", "1"),
 		("Asset Capitalization", "naming_series", "options", "ASC-.POSTYY.POSTMM.#"),
 		("Asset Capitalization", "naming_series", "default", "ASC-.POSTYY.POSTMM.#"),
+		("Asset Capitalization", "naming_series", "hidden", "1"),
 		("Asset Repair", "naming_series", "options", "ASR-.FAILYY.FAILMM.#"),
 		("Asset Repair", "naming_series", "default", "ASR-.FAILYY.FAILMM.#"),
+		("Asset Repair", "naming_series", "hidden", "1"),
 		("Asset Movement", None, "autoname", "ASM-.TRANSYY.TRANSMM.#"),
 		("Asset Value Adjustment", None, "autoname", "AVA-.DATEYY.DATEMM.#"),
 	]
