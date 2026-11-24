@@ -66,10 +66,31 @@ doc_events = {
 		"before_insert": "reyal_core.drafts.set_draft_series",
 		"before_validate": "reyal_core.drafts.keep_draft_name_current",
 	},
+	# Typed doctypes also take their series on insert, such as DN-RET- for a returned Delivery Note.
+	"Delivery Note": {
+		"before_insert": "reyal_core.drafts.set_draft_series",
+		"before_validate": "reyal_core.drafts.keep_draft_name_current",
+	},
 	"Journal Entry": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
-	"Purchase Invoice": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
-	"Purchase Receipt": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
+	"Material Request": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
+	"Purchase Invoice": {
+		"before_insert": "reyal_core.drafts.set_draft_series",
+		"before_validate": "reyal_core.drafts.keep_draft_name_current",
+	},
+	"Purchase Order": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
+	"Purchase Receipt": {
+		"before_insert": "reyal_core.drafts.set_draft_series",
+		"before_validate": "reyal_core.drafts.keep_draft_name_current",
+	},
+	"Quotation": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
+	# Sales Invoices are never renamed, so their numbers stay in the order they are entered.
+	"Sales Invoice": {
+		"before_insert": "reyal_core.drafts.set_draft_series",
+		"before_validate": "reyal_core.drafts.check_invoice_series",
+	},
 	"Sales Order": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
+	"Stock Reconciliation": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
+	"Supplier Quotation": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
 	"Stock Entry": {
 		"before_insert": "reyal_core.drafts.set_draft_series",
 		"before_validate": "reyal_core.drafts.keep_draft_name_current",

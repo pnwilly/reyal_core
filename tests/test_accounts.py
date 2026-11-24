@@ -1,6 +1,28 @@
 import pytest
 from conftest import ValidationError
 
+ACCOUNTING_DOCTYPES = {
+	"Delivery Note": ("DN-.POSTYY.POSTMM.#", "DN-RET-.POSTYY.POSTMM.#"),
+	"Journal Entry": ("JE-.POSTYY.POSTMM.##",),
+	"Material Request": ("RQ-.TRANSYY.TRANSMM.#",),
+	"Payment Entry": ("PMT-.POSTYY.POSTMM.#", "TRF-.POSTYY.POSTMM.#"),
+	"Purchase Invoice": ("Bill-.POSTYY.POSTMM.#", "Bill-RET-.POSTYY.POSTMM.#"),
+	"Purchase Order": ("PO-.TRANSYY.TRANSMM.#",),
+	"Purchase Receipt": ("GR-.POSTYY.POSTMM.#", "GR-RET-.POSTYY.POSTMM.#"),
+	"Quotation": ("QTN-.TRANSYY.TRANSMM.#",),
+	"Sales Invoice": ("INV-.YY.MM.#", "RINV-.YY.MM.#"),
+	"Sales Order": ("SO-.TRANSYY.TRANSMM.#",),
+	"Stock Entry": (
+		"SE-.POSTYY.POSTMM.#",
+		"ST-.POSTYY.POSTMM.#",
+		"MI-.POSTYY.POSTMM.#",
+		"MR-.POSTYY.POSTMM.#",
+		"STM-.POSTYY.POSTMM.#",
+	),
+	"Stock Reconciliation": ("SRE-.POSTYY.POSTMM.##",),
+	"Supplier Quotation": ("SQ-.TRANSYY.TRANSMM.#",),
+}
+
 
 def test_posting_date_sets_the_year_and_month(load_with_fake_frappe):
 	naming, _ = load_with_fake_frappe("reyal_core.naming")
@@ -27,38 +49,19 @@ def test_posting_date_is_required(load_with_fake_frappe):
 
 
 def test_accounting_series_are_offered_with_the_first_as_default(load_with_fake_frappe):
-	accounts, calls = load_with_fake_frappe(
-		"reyal_core.accounts",
-		(
-			"Journal Entry",
-			"Payment Entry",
-			"Purchase Invoice",
-			"Purchase Receipt",
-			"Sales Order",
-			"Stock Entry",
-		),
-	)
+	accounts, calls = load_with_fake_frappe("reyal_core.accounts", tuple(ACCOUNTING_DOCTYPES))
 	accounts.set_accounting_naming()
 
-	assert [call[1][:4] for call in calls if call[0] == "make"] == [
-		("Journal Entry", "naming_series", "options", "JE-.POSTYY.POSTMM.##"),
-		("Journal Entry", "naming_series", "default", "JE-.POSTYY.POSTMM.##"),
-		("Payment Entry", "naming_series", "options", "PMT-.POSTYY.POSTMM.#\nTRF-.POSTYY.POSTMM.#"),
-		("Payment Entry", "naming_series", "default", "PMT-.POSTYY.POSTMM.#"),
-		("Purchase Invoice", "naming_series", "options", "Bill-.POSTYY.POSTMM.#\nBill-RET-.POSTYY.POSTMM.#"),
-		("Purchase Invoice", "naming_series", "default", "Bill-.POSTYY.POSTMM.#"),
-		("Purchase Receipt", "naming_series", "options", "GR-.POSTYY.POSTMM.#\nGR-RET-.POSTYY.POSTMM.#"),
-		("Purchase Receipt", "naming_series", "default", "GR-.POSTYY.POSTMM.#"),
-		("Sales Order", "naming_series", "options", "SO-.TRANSYY.TRANSMM.#"),
-		("Sales Order", "naming_series", "default", "SO-.TRANSYY.TRANSMM.#"),
-		(
-			"Stock Entry",
-			"naming_series",
-			"options",
-			"SE-.POSTYY.POSTMM.#\nST-.POSTYY.POSTMM.#\nMI-.POSTYY.POSTMM.#\nMR-.POSTYY.POSTMM.#\nSTM-.POSTYY.POSTMM.#",
-		),
-		("Stock Entry", "naming_series", "default", "SE-.POSTYY.POSTMM.#"),
-	]
+	offered = {}
+	for call in calls:
+		if call[0] == "make":
+			doctype, _field, property_name, value = call[1][:4]
+			offered.setdefault(doctype, {})[property_name] = value
+
+	assert offered == {
+		doctype: {"options": "\n".join(series), "default": series[0]}
+		for doctype, series in ACCOUNTING_DOCTYPES.items()
+	}
 
 
 def test_accounting_naming_is_skipped_without_erpnext(load_with_fake_frappe):
