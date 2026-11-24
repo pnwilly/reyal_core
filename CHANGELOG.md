@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog.
 
+## [Unreleased]
+
+### Added
+
+- Name Stock Entries by purpose and posting date on sites with ERPNext, instead of `STX-` and the month they were created: `ST-` for Material Transfers, `MI-` for Material Issues, `MR-` for Material Receipts, `STM-` for Material Transfers for Manufacture and `SE-` for any other purpose, each followed by the posting year and month, so a March material issue entered in November is `MI-2503…`; a draft is renamed when its type or posting date changes
+
 ## [0.0.21] - 2026-11-23
 
 ### Added

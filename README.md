@@ -45,6 +45,7 @@ Payroll and share documents are named after the period or company they belong to
 | Purchase Invoice | `Bill-.POSTYY.POSTMM.#`, or `Bill-RET-.POSTYY.POSTMM.#` for returns (Series field) | `Bill-26031`: first bill posted in March 2026 | ERPNext |
 | Purchase Receipt | `GR-.POSTYY.POSTMM.#`, or `GR-RET-.POSTYY.POSTMM.#` for returns (Series field) | `GR-26111`: first goods receipt posted in November 2026 | ERPNext |
 | Sales Order | `SO-.TRANSYY.TRANSMM.#` (Series field) | `SO-26111`: first sales order dated November 2026 | ERPNext |
+| Stock Entry | `ST-.POSTYY.POSTMM.#` for Material Transfers, `MI-.POSTYY.POSTMM.#` for Material Issues, `MR-.POSTYY.POSTMM.#` for Material Receipts, `STM-.POSTYY.POSTMM.#` for Material Transfers for Manufacture, and `SE-.POSTYY.POSTMM.#` for any other purpose (Series field) | `MI-25031`: first material issue posted in March 2025 | ERPNext |
 | Asset | `.ABBR.-.PURYY.PURMM.#` (Series field) | `OCS-26071`: first asset of the company abbreviated OCS purchased in July 2026 | ERPNext |
 | Asset Capitalization | `ASC-.POSTYY.POSTMM.#` (Series field) | `ASC-26071`: first capitalization posted in July 2026 | ERPNext |
 | Asset Movement | `ASM-.TRANSYY.TRANSMM.#` | `ASM-26111`: first movement dated November 2026 | ERPNext |
@@ -53,7 +54,7 @@ Payroll and share documents are named after the period or company they belong to
 | Additional Salary | `ADS-.PAYYY.PAYMM.#` (Series field) | `ADS-26111`: first additional salary for November 2026 | HRMS |
 | Holiday List Assignment | `HLA-.FROMYY.FROMMM.#` (Series field) | `HLA-26011`: first assignment from January 2026 | HRMS |
 
-A saved draft is renamed when its dates move it to another period, for example a payment moved from 31 October to 2 November goes from `PMT-26101` to `PMT-26111`. Its comments, attachments, to-dos and version history move with it, and the old number is given back when it was the last one used. Submitted, cancelled and amended documents keep their names. A Payment Entry takes the `TRF-` series when it is an Internal Transfer and `PMT-` otherwise, on insert and when a draft's Payment Type changes.
+A saved draft is renamed when its dates move it to another period, for example a payment moved from 31 October to 2 November goes from `PMT-26101` to `PMT-26111`. Its comments, attachments, to-dos and version history move with it, and the old number is given back when it was the last one used. Submitted, cancelled and amended documents keep their names. A Payment Entry takes the `TRF-` series when it is an Internal Transfer and `PMT-` otherwise, on insert and when a draft's Payment Type changes. A Stock Entry takes its series from the purpose of its Stock Entry Type the same way, so a custom type with the Material Issue purpose is named `MI-`.
 
 Install and migrate set this naming. Other naming series can use the same variables: `ENDYY` and `ENDMM` read End Date, `FROMYY` and `FROMMM` read From Date, `DATEYY` and `DATEMM` read Date, `POSTYY` and `POSTMM` read Posting Date, `TRANSYY` and `TRANSMM` read Transaction Date, `PURYY` and `PURMM` read Purchase Date, `FAILYY` and `FAILMM` read Failure Date, `PAYYY` and `PAYMM` read Payroll Date, and `ABBR` is the company's abbreviation.
 

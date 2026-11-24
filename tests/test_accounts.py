@@ -29,7 +29,14 @@ def test_posting_date_is_required(load_with_fake_frappe):
 def test_accounting_series_are_offered_with_the_first_as_default(load_with_fake_frappe):
 	accounts, calls = load_with_fake_frappe(
 		"reyal_core.accounts",
-		("Journal Entry", "Payment Entry", "Purchase Invoice", "Purchase Receipt", "Sales Order"),
+		(
+			"Journal Entry",
+			"Payment Entry",
+			"Purchase Invoice",
+			"Purchase Receipt",
+			"Sales Order",
+			"Stock Entry",
+		),
 	)
 	accounts.set_accounting_naming()
 
@@ -44,6 +51,13 @@ def test_accounting_series_are_offered_with_the_first_as_default(load_with_fake_
 		("Purchase Receipt", "naming_series", "default", "GR-.POSTYY.POSTMM.#"),
 		("Sales Order", "naming_series", "options", "SO-.TRANSYY.TRANSMM.#"),
 		("Sales Order", "naming_series", "default", "SO-.TRANSYY.TRANSMM.#"),
+		(
+			"Stock Entry",
+			"naming_series",
+			"options",
+			"SE-.POSTYY.POSTMM.#\nST-.POSTYY.POSTMM.#\nMI-.POSTYY.POSTMM.#\nMR-.POSTYY.POSTMM.#\nSTM-.POSTYY.POSTMM.#",
+		),
+		("Stock Entry", "naming_series", "default", "SE-.POSTYY.POSTMM.#"),
 	]
 
 

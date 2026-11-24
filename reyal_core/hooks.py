@@ -70,6 +70,10 @@ doc_events = {
 	"Purchase Invoice": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
 	"Purchase Receipt": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
 	"Sales Order": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
+	"Stock Entry": {
+		"before_insert": "reyal_core.drafts.set_draft_series",
+		"before_validate": "reyal_core.drafts.keep_draft_name_current",
+	},
 	"Asset": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
 	"Asset Capitalization": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
 	"Asset Movement": {"before_validate": "reyal_core.drafts.keep_draft_name_current"},
