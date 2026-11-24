@@ -9,6 +9,7 @@ app_license = "mit"
 app_include_js = [
 	"/assets/reyal_core/js/notification_row_delete_v5.js?v=20261111_02",
 	"/assets/reyal_core/js/view_amendment.js?v=20261112_02",
+	"/assets/reyal_core/js/series_field.js?v=20261124_01",
 ]
 app_include_css = [
 	"/assets/reyal_core/css/notification_row_delete_v5.css?v=20261111_02",
