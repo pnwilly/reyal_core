@@ -17,6 +17,18 @@ def set_draft_series(doc, method=None):
 	doc.naming_series = typed_series(doc)
 
 
+def check_invoice_series(doc, method=None):
+	"""Stop a saved Sales Invoice draft whose Is Return no longer matches its INV- or RINV- number."""
+	if doc.is_new() or doc.docstatus != 0 or doc.naming_series == typed_series(doc):
+		return
+	kind = _("return") if doc.is_return else _("invoice")
+	frappe.throw(
+		_("{0} is numbered for another type. Create a new {1} instead of changing Is Return.").format(
+			doc.name, kind
+		)
+	)
+
+
 def keep_draft_name_current(doc, method=None):
 	"""Rename a saved draft whose name no longer matches its series and dates."""
 	if doc.is_new() or doc.docstatus != 0 or doc.get("amended_from"):
@@ -49,9 +61,9 @@ def typed_series(doc):
 	fieldname, prefixes, default = TYPED_SERIES[doc.doctype]
 	prefix = prefixes.get(get_type_value(doc, fieldname), default)
 	options = (doc.meta.get_options("naming_series") or "").split("\n")
-	series = next((option for option in options if option.startswith(prefix)), None)
+	series = next((option for option in options if option.split(".")[0] == prefix), None)
 	if not series:
-		expected = next(s for s in ACCOUNTING_SERIES[doc.doctype] if s.startswith(prefix))
+		expected = next(s for s in ACCOUNTING_SERIES[doc.doctype] if s.split(".")[0] == prefix)
 		frappe.throw(_("{0} has no {1} series. Migrate to set {2}.").format(doc.doctype, prefix, expected))
 	return series
 

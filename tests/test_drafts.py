@@ -100,6 +100,60 @@ def test_stock_entry_draft_switched_to_issue_takes_the_issue_series(drafts, monk
 	assert drafts.renames == [(doc, "MI-.POSTYY.POSTMM.#", "ST-.POSTYY.POSTMM.#", previous)]
 
 
+@pytest.mark.parametrize(
+	("doctype", "options", "is_return", "series"),
+	[
+		("Purchase Invoice", "Bill-RET-.POSTYY.POSTMM.#\nBill-.POSTYY.POSTMM.#", 0, "Bill-.POSTYY.POSTMM.#"),
+		(
+			"Purchase Invoice",
+			"Bill-.POSTYY.POSTMM.#\nBill-RET-.POSTYY.POSTMM.#",
+			1,
+			"Bill-RET-.POSTYY.POSTMM.#",
+		),
+		("Purchase Receipt", "GR-.POSTYY.POSTMM.#\nGR-RET-.POSTYY.POSTMM.#", 1, "GR-RET-.POSTYY.POSTMM.#"),
+		("Delivery Note", "DN-.POSTYY.POSTMM.#\nDN-RET-.POSTYY.POSTMM.#", 1, "DN-RET-.POSTYY.POSTMM.#"),
+		("Delivery Note", "DN-.POSTYY.POSTMM.#\nDN-RET-.POSTYY.POSTMM.#", 0, "DN-.POSTYY.POSTMM.#"),
+	],
+)
+def test_return_takes_the_return_series(drafts, doctype, options, is_return, series):
+	doc = FakeDoc(doctype, FakeMeta({"naming_series"}, options), is_return=is_return)
+	drafts.set_draft_series(doc)
+
+	assert doc.naming_series == series
+
+
+INVOICE_OPTIONS = "INV-.YY.MM.#\nRINV-.YY.MM.#"
+
+
+def invoice(is_return=0, **values):
+	return FakeDoc(
+		"Sales Invoice", FakeMeta({"naming_series"}, INVOICE_OPTIONS), is_return=is_return, **values
+	)
+
+
+@pytest.mark.parametrize(("is_return", "series"), [(0, "INV-.YY.MM.#"), (1, "RINV-.YY.MM.#")])
+def test_sales_invoice_takes_rinv_for_a_return_whatever_series_was_picked(drafts, is_return, series):
+	doc = invoice(is_return, naming_series="RINV-.YY.MM.#" if not is_return else "INV-.YY.MM.#", new=True)
+	drafts.set_draft_series(doc)
+
+	assert doc.naming_series == series
+
+
+def test_sales_invoice_draft_switched_to_return_stops_the_save(drafts):
+	doc = invoice(1, name="INV-2611390", naming_series="INV-.YY.MM.#")
+
+	with pytest.raises(ValidationError):
+		drafts.check_invoice_series(doc)
+
+
+@pytest.mark.parametrize("changes", [{"new": True}, {"docstatus": 1}, {"is_return": 0}])
+def test_new_submitted_or_matching_sales_invoices_pass(drafts, changes):
+	doc = invoice(1, name="INV-2611390", naming_series="INV-.YY.MM.#")
+	for key, value in changes.items():
+		setattr(doc, key, value)
+	drafts.check_invoice_series(doc)
+
+
 def test_other_doctypes_use_their_series_field_or_naming(drafts):
 	journal = FakeDoc("Journal Entry", FakeMeta({"naming_series"}), naming_series="JE-.POSTYY.POSTMM.##")
 	transfer = FakeDoc("Share Transfer", FakeMeta(autoname="SHT-.DATEYY.DATEMM.#"))

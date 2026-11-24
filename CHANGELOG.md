@@ -8,6 +8,9 @@ The format is based on Keep a Changelog.
 
 ### Added
 
+- Name Delivery Notes `DN-.POSTYY.POSTMM.#` and Stock Reconciliations `SRE-.POSTYY.POSTMM.##` by posting date, and Purchase Orders `PO-`, Material Requests `RQ-`, Quotations `QTN-` and Supplier Quotations `SQ-` by transaction date, on sites with ERPNext; these series were Kaida's and named by the day they were entered
+- Offer Sales Invoices `INV-.YY.MM.#`, taken over from Kaida unchanged so invoices stay numbered in the order they are entered, and number returns `RINV-.YY.MM.#` in their own sequence; a return always takes `RINV-` and an invoice `INV-`, and a draft whose Is Return changes after saving cannot be saved
+- Give returned Purchase Invoices, Purchase Receipts and Delivery Notes their `-RET-` series automatically from Is Return
 - Name Stock Entries by purpose and posting date on sites with ERPNext, instead of `STX-` and the month they were created: `ST-` for Material Transfers, `MI-` for Material Issues, `MR-` for Material Receipts, `STM-` for Material Transfers for Manufacture and `SE-` for any other purpose, each followed by the posting year and month, so a March material issue entered in November is `MI-2503…`; a draft is renamed when its type or posting date changes
 
 ## [0.0.21] - 2026-11-23
