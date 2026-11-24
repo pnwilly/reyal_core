@@ -35,6 +35,7 @@ def test_share_naming_is_created_and_owned_by_reyal(load_with_fake_frappe):
 		("Share Transfer", "to_folio_no", "fetch_if_empty", "1"),
 		("Shareholder", "naming_series", "options", "SH-.ABBR.-.#"),
 		("Shareholder", "naming_series", "default", "SH-.ABBR.-.#"),
+		("Shareholder", "naming_series", "hidden", "1"),
 	]
 	assert [call[1] for call in calls if call[0] == "set_value"] == [
 		"Share Transfer-main-autoname",
@@ -42,6 +43,7 @@ def test_share_naming_is_created_and_owned_by_reyal(load_with_fake_frappe):
 		"Share Transfer-to_folio_no-fetch_if_empty",
 		"Shareholder-naming_series-options",
 		"Shareholder-naming_series-default",
+		"Shareholder-naming_series-hidden",
 	]
 
 
