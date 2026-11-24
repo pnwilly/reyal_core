@@ -6,6 +6,9 @@ The format is based on Keep a Changelog.
 
 ## [Unreleased]
 
+
+## [0.0.22] - 2026-11-24
+
 ### Added
 
 - Name Delivery Notes `DN-.POSTYY.POSTMM.#` and Stock Reconciliations `SRE-.POSTYY.POSTMM.##` by posting date, and Purchase Orders `PO-`, Material Requests `RQ-`, Quotations `QTN-` and Supplier Quotations `SQ-` by transaction date, on sites with ERPNext; these series were Kaida's and named by the day they were entered
