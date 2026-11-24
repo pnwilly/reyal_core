@@ -1,7 +1,7 @@
 import frappe
 from frappe import _
 
-from reyal_core.accounts import ACCOUNTING_SERIES
+from reyal_core.accounts import ACCOUNTING_SERIES, TYPED_SERIES
 
 LINKED_ROWS = (
 	("Comment", "reference_name", "reference_doctype"),
@@ -13,8 +13,8 @@ LINKED_ROWS = (
 
 
 def set_draft_series(doc, method=None):
-	"""Give a new Payment Entry the TRF series when it is an internal transfer, else PMT."""
-	doc.naming_series = payment_series(doc)
+	"""Give a new document the series for its type, such as TRF for an internal transfer payment."""
+	doc.naming_series = typed_series(doc)
 
 
 def keep_draft_name_current(doc, method=None):
@@ -35,8 +35,8 @@ def keep_draft_name_current(doc, method=None):
 
 
 def series_for(doc):
-	if doc.doctype == "Payment Entry":
-		return payment_series(doc)
+	if doc.doctype in TYPED_SERIES:
+		return typed_series(doc)
 	if doc.meta.has_field("naming_series"):
 		options = [option for option in (doc.meta.get_options("naming_series") or "").split("\n") if option]
 		return doc.naming_series if doc.naming_series in options or not options else options[0]
@@ -44,15 +44,23 @@ def series_for(doc):
 	return autoname if "#" in autoname else None
 
 
-def payment_series(doc):
-	"""The PMT- or TRF- series for this payment, from the Series options reyal_core sets."""
-	prefix = "TRF-" if doc.payment_type == "Internal Transfer" else "PMT-"
+def typed_series(doc):
+	"""The series for this document's type, from the Series options reyal_core sets."""
+	fieldname, prefixes, default = TYPED_SERIES[doc.doctype]
+	prefix = prefixes.get(get_type_value(doc, fieldname), default)
 	options = (doc.meta.get_options("naming_series") or "").split("\n")
 	series = next((option for option in options if option.startswith(prefix)), None)
 	if not series:
-		expected = next(s for s in ACCOUNTING_SERIES["Payment Entry"] if s.startswith(prefix))
-		frappe.throw(_("Payment Entry has no {0} series. Migrate to set {1}.").format(prefix, expected))
+		expected = next(s for s in ACCOUNTING_SERIES[doc.doctype] if s.startswith(prefix))
+		frappe.throw(_("{0} has no {1} series. Migrate to set {2}.").format(doc.doctype, prefix, expected))
 	return series
+
+
+def get_type_value(doc, fieldname):
+	"""A Stock Entry's purpose is read from its type, since ERPNext copies it only after naming."""
+	if doc.doctype == "Stock Entry" and doc.stock_entry_type:
+		return frappe.get_cached_value("Stock Entry Type", doc.stock_entry_type, "purpose")
+	return doc.get(fieldname)
 
 
 def get_prefix(series, doc):

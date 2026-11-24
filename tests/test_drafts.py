@@ -2,6 +2,9 @@ import pytest
 from conftest import ValidationError
 
 PAYMENT_OPTIONS = "PMT-.POSTYY.POSTMM.#\nTRF-.POSTYY.POSTMM.#"
+STOCK_OPTIONS = (
+	"SE-.POSTYY.POSTMM.#\nST-.POSTYY.POSTMM.#\nMI-.POSTYY.POSTMM.#\nMR-.POSTYY.POSTMM.#\nSTM-.POSTYY.POSTMM.#"
+)
 
 
 class FakeMeta:
@@ -60,6 +63,41 @@ def test_payment_takes_the_series_for_its_type(drafts, payment_type, series):
 	drafts.set_draft_series(doc)
 
 	assert doc.naming_series == f"{series}.POSTYY.POSTMM.#"
+
+
+def stock_entry(stock_entry_type, **values):
+	return FakeDoc(
+		"Stock Entry", FakeMeta({"naming_series"}, STOCK_OPTIONS), stock_entry_type=stock_entry_type, **values
+	)
+
+
+@pytest.mark.parametrize(
+	("purpose", "series"),
+	[
+		("Material Transfer", "ST-"),
+		("Material Issue", "MI-"),
+		("Material Receipt", "MR-"),
+		("Manufacture", "SE-"),
+		("Material Transfer for Manufacture", "STM-"),
+	],
+)
+def test_stock_entry_takes_the_series_for_the_purpose_of_its_type(drafts, monkeypatch, purpose, series):
+	monkeypatch.setattr(drafts.frappe, "get_cached_value", lambda doctype, name, field: purpose)
+	doc = stock_entry("Site Issue", naming_series="SE-.POSTYY.POSTMM.#")
+	drafts.set_draft_series(doc)
+
+	assert doc.naming_series == f"{series}.POSTYY.POSTMM.#"
+
+
+def test_stock_entry_draft_switched_to_issue_takes_the_issue_series(drafts, monkeypatch):
+	monkeypatch.setattr(drafts.frappe, "get_cached_value", lambda doctype, name, field: name)
+	previous = stock_entry("Material Transfer", naming_series="ST-.POSTYY.POSTMM.#", period="2503")
+	doc = stock_entry("Material Issue", name="ST-25031", naming_series="ST-.POSTYY.POSTMM.#", period="2503")
+	doc.previous = previous
+	drafts.keep_draft_name_current(doc)
+
+	assert doc.naming_series == "MI-.POSTYY.POSTMM.#"
+	assert drafts.renames == [(doc, "MI-.POSTYY.POSTMM.#", "ST-.POSTYY.POSTMM.#", previous)]
 
 
 def test_other_doctypes_use_their_series_field_or_naming(drafts):
@@ -121,8 +159,8 @@ def test_new_submitted_amended_or_matching_documents_keep_their_name(drafts, cha
 	assert drafts.renames == []
 
 
-def test_missing_payment_series_stops_the_save(drafts):
+def test_missing_typed_series_stops_the_save(drafts):
 	doc = FakeDoc("Payment Entry", FakeMeta({"naming_series"}, "ACC-PAY-.YYYY.-"), payment_type="Pay")
 
 	with pytest.raises(ValidationError):
-		drafts.payment_series(doc)
+		drafts.typed_series(doc)
