@@ -6,6 +6,9 @@ The format is based on Keep a Changelog.
 
 ## [Unreleased]
 
+
+## [0.0.24] - 2026-11-24
+
 ### Fixed
 
 - Keep the Series field hidden on new documents: ERPNext showed it on every new Stock Entry, Sales Invoice, Purchase Receipt, Journal Entry and other transactions, overriding the hidden setting
