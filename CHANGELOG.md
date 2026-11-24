@@ -13,6 +13,10 @@ The format is based on Keep a Changelog.
 - Give returned Purchase Invoices, Purchase Receipts and Delivery Notes their `-RET-` series automatically from Is Return
 - Name Stock Entries by purpose and posting date on sites with ERPNext, instead of `STX-` and the month they were created: `ST-` for Material Transfers, `MI-` for Material Issues, `MR-` for Material Receipts, `STM-` for Material Transfers for Manufacture and `SE-` for any other purpose, each followed by the posting year and month, so a March material issue entered in November is `MI-2503…`; a draft is renamed when its type or posting date changes
 
+### Changed
+
+- Report only whether the PR's checks passed in the comment posted once they finish, without mentioning the author; the assignment is the one notification
+
 ## [0.0.21] - 2026-11-23
 
 ### Added
