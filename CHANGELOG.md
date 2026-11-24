@@ -6,6 +6,9 @@ The format is based on Keep a Changelog.
 
 ## [Unreleased]
 
+
+## [0.0.23] - 2026-11-24
+
 ### Changed
 
 - Hide the Series field on every doctype whose series reyal_core sets, such as Stock Entry, Payment Entry and Sales Invoice; it was never the user's choice, and before saving it showed a default that reyal_core then replaced
